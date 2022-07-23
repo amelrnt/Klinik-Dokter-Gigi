@@ -10,7 +10,7 @@ use Illuminate\Http\Response;
 class LoginController extends Controller
 {
     public function index(){
-        return view('login');
+        return view('authentication/login');
     }
 
     public function login(Request $request){
@@ -27,21 +27,21 @@ class LoginController extends Controller
             'password.required' => 'Password harus diinput'
         ]);
 
-        $login = Login::where(['username'=>$username,'password'=>$password])->get();
+        $login = Login::where(['username'=>$username,'password'=>$password])->first();
         
         if($login->count() > 0){
-            // if($login['user_iduser'] == 1){
-            //     return response()->json(['message'=>'success','role'=>'owner','data'=>$login], Response::HTTP_OK);
-            // }
-            // if($login['user_iduser'] == 2){
-            //     return response()->json(['message'=>'success','role'=>'dokter','data'=>$login], Response::HTTP_OK);
-            // }
-            // if($login['user_iduser'] == 4){
-            //     return response()->json(['message'=>'success','role'=>'pasien','data'=>$login], Response::HTTP_OK);
-            // }
-            // if($login['user_iduser'] == 6){
+            if($login->user_iduser == 1){
+                return response()->json(['message'=>'success','role'=>'owner','data'=>$login], Response::HTTP_OK);
+            }
+            if($login->user_iduser == 2){
+                return response()->json(['message'=>'success','role'=>'dokter','data'=>$login], Response::HTTP_OK);
+            }
+            if($login->user_iduser == 4){
+                return response()->json(['message'=>'success','role'=>'pasien','data'=>$login], Response::HTTP_OK);
+            }
+            if($login->user_iduser == 6){
                 return response()->json(['message'=>'success','role'=>'admin','data'=>$login], Response::HTTP_OK);
-            // }
+            }
         }else{
             return response()->json(['message'=>'failed login!'], Response::HTTP_BAD_REQUEST);
         }
