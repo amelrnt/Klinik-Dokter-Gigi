@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\DokterController;
+use App\Http\Controllers\PasienController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,4 +24,8 @@ Route::get('/', function () {
 Route::get('/login', [LoginController::class,'index']);
 Route::post('/authenticate', [LoginController::class,'login']);
 
+Route::get('/admin', [AdminController::class , 'index']);
 
+Route::get('/pasien', [PasienController::class , 'index']);
+
+Route::get('/dokter', [DokterController::class , 'index']);
