@@ -23,12 +23,15 @@ Route::get('/', function () {
 });
 
 Route::get('/login', [LoginController::class,'index']);
-Route::post('/authenticate', [LoginController::class,'login']);
+Route::post('/authenticate', [LoginController::class,'authenticate']);
+Route::get('/dashboard/{id}', [LoginController::class,'login']);
+
 
 Route::get('/register', [RegisterController::class,'index']);
+Route::post('/store', [RegisterController::class,'store']);
 
-Route::get('/admin', [AdminController::class , 'index']);
+Route::get('/admin/{id}', [AdminController::class , 'index']);
 
-Route::get('/pasien', [PasienController::class , 'index']);
+Route::get('/pasien/{id}', [PasienController::class , 'index']);
 
-Route::get('/dokter', [DokterController::class , 'index']);
+Route::get('/dokter/{id}', [DokterController::class , 'index']);

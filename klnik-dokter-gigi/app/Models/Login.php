@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Login extends Model
 {
     // use HasFactory;
+    public $timestamps = false;
     protected $table = 'login';
     protected $primaryKey = 'idlogin';
 }

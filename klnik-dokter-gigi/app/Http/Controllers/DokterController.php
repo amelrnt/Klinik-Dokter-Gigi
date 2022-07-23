@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Dokter;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class DokterController extends Controller
 {
-    public function index()
+    public function index($id)
     {
-        return view('dokter/index');
+        $data = User::where(['iduser'=>$id])->first();
+        return view('dokter/index',['data'=>$data]);
     }
 
-  }
+}
