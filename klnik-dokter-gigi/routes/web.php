@@ -36,5 +36,6 @@ Route::get('/pasien/{id}', [PasienController::class , 'index'])->name('pasien.in
 Route::get('/riwayat/{id}', [PasienController::class , 'riwayat'])->name('list.riwayat');
 Route::get('/barang/{id}', [PasienController::class , 'barang'])->name('list.barang');
 Route::get('/jadwal', [PasienController::class , 'jadwal'])->name('list.jadwal');
+Route::get('/pasien/checkup/{id}/{jadwal}', [PasienController::class , 'daftar_checkup'])->name('daftar.checkup');
 
 Route::get('/dokter/{id}', [DokterController::class , 'index']);

@@ -143,7 +143,7 @@
                                                     <td>{{$j->hari}}</td>
                                                     <td>{{$j->jam}}</td>
                                                     <td>{{$j->nama_user}}</td>
-                                                    <td><a href="#" class="btn btn-success">Daftar</a></td>
+                                                    <td><a href="{{route('daftar.checkup',['id'=>Session::get('iduser'),'jadwal'=>$j->jadwal_praktik_idjadwal_praktik])}}" class="btn btn-success">Daftar</a></td>
                                                 </tr>
                                                 @endforeach
                                             @else:
@@ -202,7 +202,7 @@
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="">Logout</a>
+                    <a class="btn btn-primary" href="{{route('logout')}}">Logout</a>
                 </div>
             </div>
         </div>
