@@ -27,12 +27,14 @@ Route::post('/authenticate', [LoginController::class,'authenticate']);
 Route::get('/dashboard/{id}', [LoginController::class,'login']);
 Route::get('/logout', [LoginController::class , 'logout'])->name('logout');
 
-
 Route::get('/register', [RegisterController::class,'index']);
 Route::post('/store', [RegisterController::class,'store']);
 
 Route::get('/admin/{id}', [AdminController::class , 'index']);
 
-Route::get('/pasien/{id}', [PasienController::class , 'index']);
+Route::get('/pasien/{id}', [PasienController::class , 'index'])->name('pasien.index');
+Route::get('/riwayat/{id}', [PasienController::class , 'riwayat'])->name('list.riwayat');
+Route::get('/barang/{id}', [PasienController::class , 'barang'])->name('list.barang');
+Route::get('/jadwal', [PasienController::class , 'jadwal'])->name('list.jadwal');
 
 Route::get('/dokter/{id}', [DokterController::class , 'index']);

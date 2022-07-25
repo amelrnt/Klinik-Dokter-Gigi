@@ -13,7 +13,7 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{route('pasien.index', Session::get('iduser'))}}">
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
@@ -25,7 +25,7 @@
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item active">
-                <a class="nav-link" href="index.html">
+                <a class="nav-link" href="{{route('pasien.index', Session::get('iduser'))}}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
@@ -48,15 +48,15 @@
                 <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Checkup Screens</h6>
-                        <a class="collapse-item" href="#">Lihat Jadwal</a>
-                        <a class="collapse-item" href="#">Riwayat</a>
+                        <a class="collapse-item" href="#">Cek Jadwal</a>
+                        <a class="collapse-item" href="{{route('list.riwayat', Session::get('iduser'))}}">Riwayat</a>
                     </div>
                 </div>
             </li>
 
             <!-- Nav Item - Charts -->
             <li class="nav-item">
-                <a class="nav-link" href="charts.html">
+                <a class="nav-link" href="{{route('list.barang', Session::get('iduser'))}}">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Riwayat Barang</span></a>
             </li>
