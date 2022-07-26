@@ -31,6 +31,10 @@ class LoginController extends Controller
 
         $login = Login::where(['username'=>$username,'password'=>$password])->first()->user;
         
+        $data = User::where(['iduser'=>$login->iduser])->first();
+        
+        session(['iduser'=>$login->iduser,'nama_user'=>$data->nama_user,'alamat'=>$data->alamat,'noHp'=>$data->noHp,'email'=>$data->email,'level'=>$data->level]);
+        
         if($login->count() > 0){
             if($login->level == 'admin' || $login->level =='owner'){
                 return redirect('admin/'.$login->iduser);
@@ -52,5 +56,7 @@ class LoginController extends Controller
 
         return redirect('login');
     }
+
+    
 
 }

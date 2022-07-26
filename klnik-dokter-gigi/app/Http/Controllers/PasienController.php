@@ -7,13 +7,29 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
+use App\Models\Login;
 
 class PasienController extends Controller
 {
     public function index($id)
-    {
-        $data = User::where(['iduser'=>$id])->first();
-        session(['iduser'=>$id,'nama_user'=>$data->nama_user,'alamat'=>$data->alamat,'noHp'=>$data->noHp,'email'=>$data->email,'level'=>$data->level]);
+    {   
+        $barang = DB::table('transaksi_detail as td')
+                    ->join('transaksi as t', 'td.transaksi_idtransaksi', '=', 't.idtransaksi')
+                    ->join('user as u', 't.user_iduser', '=', 'u.iduser')
+                    ->join('barang as b', 'td.barang_idbarang', '=', 'b.idbarang')
+                    ->select('td.*', 'u.*', 'b.*','t.created_at')
+                    ->where('u.iduser',$id)
+                    ->get();
+
+        $jadwal = DB::table('jadwal_praktik')
+                    ->join('dokter', 'jadwal_praktik.dokter_iddokter', '=', 'dokter.iddokter')
+                    ->join('user', 'dokter.user_iduser', '=', 'user.iduser')
+                    ->join('praktik_dijadwalkan as pd','pd.jadwal_praktik_idjadwal_praktik','=','jadwal_praktik.idjadwal_praktik')
+                    ->select('jadwal_praktik.*', 'user.*', 'pd.tanggal','pd.keterangan','pd.status','pd.jadwal_praktik_idjadwal_praktik')
+                    ->get();
+
+        session(['total_barang'=>count($barang),'total_jadwal'=>count($jadwal)]);
+
         // var_dump(session('iduser'));
         return view('pasien/index');
     }
@@ -96,5 +112,4 @@ class PasienController extends Controller
             return redirect('list.jadwal');
         }
     }
-
 }
