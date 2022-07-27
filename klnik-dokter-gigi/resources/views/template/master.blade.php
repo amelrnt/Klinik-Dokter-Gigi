@@ -12,16 +12,11 @@
     <title>@yield('title')</title>
 
     <!-- Custom fonts for this template-->
-    {{-- <link href={{asset("fontawesome-free/css/all.min.css")}} rel="stylesheet" type="text/css"> --}}
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet" type="text/css">
-    {{-- <link href={{asset("fontawesome-free/css/fontawesome.css")}} rel="stylesheet" type="text/css"> --}}
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
-    {{-- Medical web icon --}}
     <link rel="icon" type="image/x-icon" href="{{asset('/icon/medical-team.png')}}">
-    {{-- Icon reference --}}
-    {{-- <a href="https://www.flaticon.com/free-icons/medical-doctor" title="medical doctor icons">Medical doctor icons created by Freepik - Flaticon</a> --}}
     
     <!-- Custom styles for this template-->
     <link href={{asset("css/sb-admin-2.min.css")}} rel="stylesheet">
@@ -42,6 +37,10 @@
                 <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{route('dokter.index', Session::get('iduser'))}}">
             @elseif(Session::get('level') == 'pasien')
                 <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{route('pasien.index', Session::get('iduser'))}}">
+            @elseif(Session::get('level') == 'admin')
+                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{route('admin.index', Session::get('iduser'))}}">
+            @elseif(Session::get('level') == 'owner')
+                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{route('owner.index', Session::get('iduser'))}}">        
             @endif
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
@@ -58,6 +57,10 @@
                 <a class="nav-link" href="{{route('dokter.index', Session::get('iduser'))}}">
                 @elseif(Session::get('level') == 'pasien')
                 <a class="nav-link" href="{{route('pasien.index', Session::get('iduser'))}}">
+                @elseif(Session::get('level') == 'admin')
+                <a class="nav-link" href="{{route('admin.index', Session::get('iduser'))}}">
+                @elseif(Session::get('level') == 'pemilik')
+                <a class="nav-link" href="{{route('owner.index', Session::get('iduser'))}}">
                 @endif
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
@@ -87,7 +90,6 @@
                 </div>
             </li>
             
-            <!-- Nav Item - Charts -->
             <li class="nav-item">
                 <a class="nav-link" href="{{route('list.barang', Session::get('iduser'))}}">
                     <i class="fas fa-fw fa-table"></i>
@@ -102,6 +104,55 @@
                     <span>Jadwal Checkup</span></a>
             </li>
 
+            @elseif(Session::get('level') == 'admin')
+
+            <li class="nav-item">
+                <a class="nav-link" href="">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Kelola Barang</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Assign User</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Setujui Jadwal</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Kelola Jadwal Dokter</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Data Transaksi</span></a>
+            </li>
+            @elseif(Session::get('level') == 'pemilik')
+
+            <li class="nav-item">
+                <a class="nav-link" href="">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Kelola Barang</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Kelola Jadwal Dokter</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Data Penjadwalan</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Data Transaksi</span></a>
+            </li>
             @endif
 
             <!-- Divider -->

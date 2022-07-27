@@ -36,8 +36,11 @@ class LoginController extends Controller
         session(['iduser'=>$login->iduser,'nama_user'=>$data->nama_user,'alamat'=>$data->alamat,'noHp'=>$data->noHp,'email'=>$data->email,'level'=>$data->level]);
         
         if($login->count() > 0){
-            if($login->level == 'admin' || $login->level =='owner'){
+            if($login->level == 'admin'){
                 return redirect('admin/'.$login->iduser);
+            }
+            if($login->level == 'pemilik'){
+                return redirect('owner/'.$login->iduser);
             }
             if($login->level == 'dokter'){
                 return redirect('dokter/'.$login->iduser);

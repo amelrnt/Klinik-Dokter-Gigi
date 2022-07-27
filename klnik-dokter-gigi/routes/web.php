@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\DokterController;
 use App\Http\Controllers\PasienController;
 use App\Http\Controllers\ProfileController;
@@ -20,7 +21,7 @@ use App\Http\Controllers\ProfileController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('landing_page/index');
 });
 
 Route::get('/login', [LoginController::class,'index'])->name('login');
@@ -34,7 +35,9 @@ Route::post('/profile/update', [ProfileController::class,'update'])->name('updat
 Route::get('/register', [RegisterController::class,'index'])->name('register');
 Route::post('/store', [RegisterController::class,'store']);
 
-Route::get('/admin/{id}', [AdminController::class ,'index']);
+Route::get('/admin/{id}', [AdminController::class ,'index'])->name('admin.index');
+
+Route::get('/owner/{id}', [OwnerController::class ,'index'])->name('owner.index');
 
 Route::get('/pasien/{id}', [PasienController::class ,'index'])->name('pasien.index');
 Route::get('/riwayat/{id}', [PasienController::class ,'riwayat'])->name('list.riwayat');
@@ -44,3 +47,4 @@ Route::get('/pasien/checkup/{id}/{jadwal}', [PasienController::class ,'daftar_ch
 
 Route::get('/dokter/{id}', [DokterController::class ,'index'])->name('dokter.index');
 Route::get('/dokter/jadwal/{id}', [DokterController::class ,'jadwal'])->name('dokter.jadwal');
+
