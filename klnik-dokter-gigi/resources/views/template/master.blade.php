@@ -39,7 +39,7 @@
                 <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{route('pasien.index', Session::get('iduser'))}}">
             @elseif(Session::get('level') == 'admin')
                 <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{route('admin.index', Session::get('iduser'))}}">
-            @elseif(Session::get('level') == 'owner')
+            @elseif(Session::get('level') == 'pemilik')
                 <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{route('owner.index', Session::get('iduser'))}}">        
             @endif
                 <div class="sidebar-brand-icon rotate-n-15">
@@ -107,27 +107,27 @@
             @elseif(Session::get('level') == 'admin')
 
             <li class="nav-item">
-                <a class="nav-link" href="">
+                <a class="nav-link" href="{{route('admin.barang', Session::get('iduser'))}}">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Kelola Barang</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="">
+                <a class="nav-link" href="{{route('admin.verif', Session::get('iduser'))}}">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Assign User</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="">
+                <a class="nav-link" href="{{route('admin.jadwal', Session::get('iduser'))}}">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Setujui Jadwal</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="">
+                <a class="nav-link" href="{{route('admin.jadwaldokter', Session::get('iduser'))}}">  
                     <i class="fas fa-fw fa-table"></i>
                     <span>Kelola Jadwal Dokter</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="">
+                <a class="nav-link" href="{{route('admin.transaksi', Session::get('iduser'))}}">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Data Transaksi</span></a>
             </li>

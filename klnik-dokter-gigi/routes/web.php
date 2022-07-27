@@ -36,6 +36,12 @@ Route::get('/register', [RegisterController::class,'index'])->name('register');
 Route::post('/store', [RegisterController::class,'store']);
 
 Route::get('/admin/{id}', [AdminController::class ,'index'])->name('admin.index');
+Route::get('/barangadmin/{id}', [AdminController::class ,'allBarang'])->name('admin.barang');
+Route::get('/verif_user/{id}', [AdminController::class ,'verifUser'])->name('admin.verif');
+Route::get('/verif_jadwal/{id}', [AdminController::class ,'verifJadwal'])->name('admin.jadwal');
+Route::get('/jadwaldokter/{id}', [AdminController::class ,'showJadwal'])->name('admin.jadwaldokter');
+Route::get('/transaksi/{id}', [AdminController::class ,'showTransaksi'])->name('admin.transaksi');
+
 
 Route::get('/owner/{id}', [OwnerController::class ,'index'])->name('owner.index');
 
