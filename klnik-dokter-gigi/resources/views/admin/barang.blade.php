@@ -79,7 +79,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <!-- Edit Modal-->
+                                                {{-- Delete modal --}}
                                                 <div class="modal fade" id="deleteModal-{{$b->idbarang}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                                                 aria-hidden="true">
                                                     <div class="modal-dialog" role="document">
@@ -90,7 +90,6 @@
                                                                     <span aria-hidden="true">×</span>
                                                                 </button>
                                                             </div>
-                                                            {{-- Delete modal --}}
                                                             <div class="modal-body">
                                                                 <form name="deleteform_{{$b->idbarang}}" method="POST" action="{{route('admin.delete.barang',$b->idbarang)}}">
                                                                     @method('DELETE')

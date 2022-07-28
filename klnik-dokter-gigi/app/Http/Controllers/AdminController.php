@@ -8,6 +8,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use App\Models\Barang;
+use stdClass;
+use Illuminate\Support\Collection;
 
 class AdminController extends Controller
 {
@@ -105,14 +107,31 @@ class AdminController extends Controller
         $jadwal = DB::table('jadwal_praktik')
         ->join('dokter', 'jadwal_praktik.dokter_iddokter', '=', 'dokter.iddokter')
         ->join('user', 'user.iduser', '=', 'dokter.user_iduser')
-        ->select('jadwal_praktik.hari', 'jadwal_praktik.jam', 'user.nama_user')
+        ->select('jadwal_praktik.*', 'user.nama_user')
         ->get();
 
-        return view('admin/jadwal',['jadwal'=>$jadwal]);
+        $dokter = DB::table('dokter')
+                    ->join('user','dokter.user_iduser','=','user.iduser')
+                    ->select('*')
+                    ->get();
+        
+        $hours = new Collection(['9','10','11','12','13','14','15','16','17','18','19']);
+        $minutes = new Collection(['00','15','30','45']);
+        $days = new Collection(['Senin','Selasa','Rabu','Kamis','Jumat']);
+
+        // var_dump("Jadwal", $jadwal, "Dokter", $dokter, $hours, $minutes);
+
+        return view('admin/jadwal',['jadwal'=>$jadwal,'dokter'=>$dokter,'hours'=>$hours,'minutes'=>$minutes,'days'=>$days]);
     }
 
     public function addNewJadwal(){
-        return view('admin/tambahjadwal');
+        
+        $dokter = DB::table('dokter')
+                    ->join('user','dokter.user_iduser','=','user.iduser')
+                    ->select('*')
+                    ->get();
+
+        return view('admin/tambahjadwal',['dokter'=>$dokter]);
     }
 
 
