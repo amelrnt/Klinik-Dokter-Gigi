@@ -30,12 +30,10 @@ class PasienController extends Controller
 
         session(['total_barang'=>count($barang),'total_jadwal'=>count($jadwal)]);
 
-        // var_dump(session('iduser'));
         return view('pasien/index');
     }
 
     public function riwayat(){
-        
         $riwayat = DB::table('jadwal_praktik')
                     ->join('dokter', 'jadwal_praktik.dokter_iddokter', '=', 'dokter.iddokter')
                     ->join('user', 'dokter.user_iduser', '=', 'user.iduser')
@@ -47,20 +45,59 @@ class PasienController extends Controller
                     
         return view('pasien/riwayat',['riwayat'=>$riwayat]);
     }
+
     public function jadwal(){
-        
         $jadwal = DB::table('jadwal_praktik')
                     ->join('dokter', 'jadwal_praktik.dokter_iddokter', '=', 'dokter.iddokter')
                     ->join('user', 'dokter.user_iduser', '=', 'user.iduser')
-                    ->join('praktik_dijadwalkan as pd','pd.jadwal_praktik_idjadwal_praktik','=','jadwal_praktik.idjadwal_praktik')
-                    ->select('jadwal_praktik.*', 'user.*', 'pd.tanggal','pd.keterangan','pd.status','pd.jadwal_praktik_idjadwal_praktik')
+                    ->select('jadwal_praktik.idjadwal_praktik','jadwal_praktik.hari', 'jadwal_praktik.jam', 'user.nama_user','user.iduser')
                     ->get();
 
-        // var_dump($jadwal);
         return view('pasien/jadwalcheckup',['jadwal'=>$jadwal]);
     }
+
+    public function get_id_jadwal($id){
+        $jadwal = DB::table('jadwal_praktik')
+                    ->join('dokter', 'jadwal_praktik.dokter_iddokter', '=', 'dokter.iddokter')
+                    ->join('user', 'dokter.user_iduser', '=', 'user.iduser')
+                    ->select('jadwal_praktik.idjadwal_praktik','jadwal_praktik.hari', 'jadwal_praktik.jam', 'user.nama_user','user.iduser')
+                    ->where('jadwal_praktik.idjadwal_praktik',$id)
+                    ->first();
+
+        return $jadwal;
+    }
+
+    public function store_jadwal(Request $request,$idjadwal){
+
+        // Create the timestamp from the given date
+        $timestamp = strtotime($request->input('tanggal_'.$idjadwal));
+         
+        // Create the new format from the timestamp
+        $tanggal = date("Y-m-d", $timestamp);
+
+        $idpasien = DB::table('pasien')->where('user_iduser',Session::get('iduser'))->select('idpasien')->first();
+
+        $jadwal = DB::table('praktik_dijadwalkan')
+                    ->insert([
+                        'tanggal'=> $tanggal,
+                        'keterangan' => $request->input('keterangan_'.$idjadwal),
+                        'jadwal_praktik_idjadwal_praktik'=> $idjadwal,
+                        'pasien_idpasien'=> (string)$idpasien,
+                        'dokter_iddokter'=> $request->input('id_dokter_'.$idjadwal),
+                        'status'=> '0'
+                    ]);
+        if($jadwal){
+            Session::flash('message', 'Jadwal berhasil ditambah');
+            Session::flash('alert-class', 'alert-success'); 
+        }else{
+            Session::flash('message', 'Jadwal gagal ditambah!');
+            Session::flash('alert-class', 'alert-danger'); 
+        }
+
+        return redirect(route('list.jadwal'));
+    }
+
     public function barang(){
-        
         $barang = DB::table('transaksi_detail as td')
                     ->join('transaksi as t', 'td.transaksi_idtransaksi', '=', 't.idtransaksi')
                     ->join('user as u', 't.user_iduser', '=', 'u.iduser')
@@ -73,7 +110,7 @@ class PasienController extends Controller
     }
 
     public function daftar_checkup($jadwal){
-        
+        // get idpasien from session, 
 
         $pasien = DB::table('pasien as p')
                 ->join('user as u', 'p.user_iduser','=','u.iduser')

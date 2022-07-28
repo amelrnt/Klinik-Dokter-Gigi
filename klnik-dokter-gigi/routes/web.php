@@ -54,8 +54,11 @@ Route::get('/owner', [OwnerController::class ,'index'])->name('owner.index');
 Route::get('/pasien', [PasienController::class ,'index'])->name('pasien.index');
 Route::get('/pasien/riwayat', [PasienController::class ,'riwayat'])->name('list.riwayat');
 Route::get('/pasien/barang', [PasienController::class ,'barang'])->name('list.barang');
-Route::get('/pasie/jadwal', [PasienController::class ,'jadwal'])->name('list.jadwal');
+Route::get('/pasien/jadwal', [PasienController::class ,'jadwal'])->name('list.jadwal');
 Route::get('/pasien/checkup/{jadwal}', [PasienController::class ,'daftar_checkup'])->name('daftar.checkup');
+
+Route::get('/pasien/getjadwal/{id}', [PasienController::class ,'get_id_jadwal'])->name('pasien.get.jadwal');
+Route::post('/pasien/storejadwal/{id}',[PasienController::class ,'store_jadwal'])->name('pasien.store.jadwal');
 
 Route::get('/dokter', [DokterController::class ,'index'])->name('dokter.index');
 Route::get('/dokter/jadwal', [DokterController::class ,'jadwal'])->name('dokter.jadwal');

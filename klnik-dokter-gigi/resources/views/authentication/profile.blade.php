@@ -23,6 +23,22 @@
                                     <div class="col mr-4">
                                         <div class="row">
                                             <div class="col">
+                                                <p><b>Username</b></p>
+                                            </div>
+                                            <div class="col">
+                                                <p>{{$data->nama_user}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <p><b>Password</b></p>
+                                            </div>
+                                            <div class="col">
+                                                <p>********</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
                                                 <p><b>Nama</b></p>
                                             </div>
                                             <div class="col">
