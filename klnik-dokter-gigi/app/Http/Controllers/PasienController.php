@@ -11,14 +11,14 @@ use App\Models\Login;
 
 class PasienController extends Controller
 {
-    public function index($id)
+    public function index()
     {   
         $barang = DB::table('transaksi_detail as td')
                     ->join('transaksi as t', 'td.transaksi_idtransaksi', '=', 't.idtransaksi')
                     ->join('user as u', 't.user_iduser', '=', 'u.iduser')
                     ->join('barang as b', 'td.barang_idbarang', '=', 'b.idbarang')
                     ->select('td.*', 'u.*', 'b.*','t.created_at')
-                    ->where('u.iduser',$id)
+                    ->where('u.iduser',Session::get('iduser'))
                     ->get();
 
         $jadwal = DB::table('jadwal_praktik')
@@ -34,7 +34,7 @@ class PasienController extends Controller
         return view('pasien/index');
     }
 
-    public function riwayat($id){
+    public function riwayat(){
         
         $riwayat = DB::table('jadwal_praktik')
                     ->join('dokter', 'jadwal_praktik.dokter_iddokter', '=', 'dokter.iddokter')
@@ -42,7 +42,7 @@ class PasienController extends Controller
                     ->join('praktik_dijadwalkan as pd','pd.jadwal_praktik_idjadwal_praktik','=','jadwal_praktik.idjadwal_praktik')
                     ->join('pasien','pasien.idpasien','=','pd.pasien_idpasien')
                     ->select('jadwal_praktik.*', 'user.*', 'pd.tanggal','pd.keterangan','pd.status')
-                    ->where('pasien.user_iduser',$id)
+                    ->where('pasien.user_iduser',Session::get('iduser'))
                     ->get();
                     
         return view('pasien/riwayat',['riwayat'=>$riwayat]);
@@ -59,26 +59,26 @@ class PasienController extends Controller
         // var_dump($jadwal);
         return view('pasien/jadwalcheckup',['jadwal'=>$jadwal]);
     }
-    public function barang($id){
+    public function barang(){
         
         $barang = DB::table('transaksi_detail as td')
                     ->join('transaksi as t', 'td.transaksi_idtransaksi', '=', 't.idtransaksi')
                     ->join('user as u', 't.user_iduser', '=', 'u.iduser')
                     ->join('barang as b', 'td.barang_idbarang', '=', 'b.idbarang')
                     ->select('td.*', 'u.*', 'b.*','t.created_at')
-                    ->where('u.iduser',$id)
+                    ->where('u.iduser',Session::get('iduser'))
                     ->get();
 
         return view('pasien/barang',['barang'=>$barang]);
     }
 
-    public function daftar_checkup($id, $jadwal){
+    public function daftar_checkup($jadwal){
         
 
         $pasien = DB::table('pasien as p')
                 ->join('user as u', 'p.user_iduser','=','u.iduser')
                 ->select('p.idpasien')
-                ->where('p.user_iduser',$id)
+                ->where('p.user_iduser',Session::get('iduser'))
                 ->first();
         
         $jadwal_praktik = DB::table('praktik_dijadwalkan as pd')
@@ -91,7 +91,7 @@ class PasienController extends Controller
                     ->join('jadwal_praktik as jp', 'pj.jadwal_praktik_idjadwal_praktik','=','jp.idjadwal_praktik')
                     ->join('pasien as p','pj.pasien_idpasien','=','p.idpasien')
                     ->select('pj.*','p.*','jp.*')
-                    ->where('p.user_iduser',$id)
+                    ->where('p.user_iduser',Session::get('iduser'))
                     ->where('jp.dokter_iddokter',$jadwal_praktik->dokter_iddokter)
                     ->get();
 
@@ -107,7 +107,7 @@ class PasienController extends Controller
                                 'status' => '0'
                             ]);
         if($request_jadwal){
-            return redirect('riwayat/'.$id);
+            return redirect('riwayat');
         }else{
             return redirect('list.jadwal');
         }

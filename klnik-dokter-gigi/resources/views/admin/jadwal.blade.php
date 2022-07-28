@@ -13,7 +13,7 @@
                         <div class="card shadow mb-4">
                             <div class="card-header py-3">
                                 <h6 class="m-0 font-weight-bold text-primary">Daftar Jadwal Dokter</h6>
-                              <button type="button" class="btn btn-primary">Tambah Data</button>
+                              <a href="{{route('admin.input.jadwal')}}" class="btn btn-primary">Tambah Data</a>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">

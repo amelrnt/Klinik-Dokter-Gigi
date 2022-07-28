@@ -26,31 +26,37 @@ Route::get('/', function () {
 
 Route::get('/login', [LoginController::class,'index'])->name('login');
 Route::post('/authenticate', [LoginController::class,'authenticate']);
-Route::get('/dashboard/{id}', [LoginController::class,'login']);
 Route::get('/logout', [LoginController::class , 'logout'])->name('logout');
-Route::get('/edit/profile/{id}', [ProfileController::class , 'edit'])->name('edit.profile');
-Route::get('/profile/{id}', [ProfileController::class , 'profile'])->name('profile');
+Route::get('/edit/profile', [ProfileController::class , 'edit'])->name('edit.profile');
+Route::get('/profile', [ProfileController::class , 'profile'])->name('profile');
 Route::post('/profile/update', [ProfileController::class,'update'])->name('update.profile');
 
 Route::get('/register', [RegisterController::class,'index'])->name('register');
 Route::post('/store', [RegisterController::class,'store']);
 
-Route::get('/admin/{id}', [AdminController::class ,'index'])->name('admin.index');
-Route::get('/barangadmin/{id}', [AdminController::class ,'allBarang'])->name('admin.barang');
-Route::get('/verif_user/{id}', [AdminController::class ,'verifUser'])->name('admin.verif');
-Route::get('/verif_jadwal/{id}', [AdminController::class ,'verifJadwal'])->name('admin.jadwal');
-Route::get('/jadwaldokter/{id}', [AdminController::class ,'showJadwal'])->name('admin.jadwaldokter');
-Route::get('/transaksi/{id}', [AdminController::class ,'showTransaksi'])->name('admin.transaksi');
+Route::get('/admin', [AdminController::class ,'index'])->name('admin.index');
+Route::get('/admin/barangadmin', [AdminController::class ,'allBarang'])->name('admin.barang');
 
+Route::get('/admin/inputnewbarang', [AdminController::class ,'inputNewBarang'])->name('admin.tambah.barang');
+Route::post('/admin/storebarang', [AdminController::class ,'addBarang']);
+Route::delete('/admin/deletebarang/{id}', [AdminController::class ,'deleteBarang'])->name('admin.delete.barang');
+Route::put('/admin/updatebarang/{id}', [AdminController::class ,'updatebarang'])->name('admin.update.barang');
 
-Route::get('/owner/{id}', [OwnerController::class ,'index'])->name('owner.index');
+Route::get('/admin/verif_user', [AdminController::class ,'verifUser'])->name('admin.verif');
+Route::get('/admin/verif_jadwal', [AdminController::class ,'verifJadwal'])->name('admin.jadwal');
+Route::get('/admin/jadwaldokter', [AdminController::class ,'showJadwal'])->name('admin.jadwaldokter');
+Route::get('/admin/transaksi', [AdminController::class ,'showTransaksi'])->name('admin.transaksi');
 
-Route::get('/pasien/{id}', [PasienController::class ,'index'])->name('pasien.index');
-Route::get('/riwayat/{id}', [PasienController::class ,'riwayat'])->name('list.riwayat');
-Route::get('/barang/{id}', [PasienController::class ,'barang'])->name('list.barang');
-Route::get('/jadwal', [PasienController::class ,'jadwal'])->name('list.jadwal');
-Route::get('/pasien/checkup/{id}/{jadwal}', [PasienController::class ,'daftar_checkup'])->name('daftar.checkup');
+Route::get('/admin/inputjadwal', [AdminController::class ,'addNewJadwal'])->name('admin.input.jadwal');
 
-Route::get('/dokter/{id}', [DokterController::class ,'index'])->name('dokter.index');
-Route::get('/dokter/jadwal/{id}', [DokterController::class ,'jadwal'])->name('dokter.jadwal');
+Route::get('/owner', [OwnerController::class ,'index'])->name('owner.index');
+
+Route::get('/pasien', [PasienController::class ,'index'])->name('pasien.index');
+Route::get('/pasien/riwayat', [PasienController::class ,'riwayat'])->name('list.riwayat');
+Route::get('/pasien/barang', [PasienController::class ,'barang'])->name('list.barang');
+Route::get('/pasie/jadwal', [PasienController::class ,'jadwal'])->name('list.jadwal');
+Route::get('/pasien/checkup/{jadwal}', [PasienController::class ,'daftar_checkup'])->name('daftar.checkup');
+
+Route::get('/dokter', [DokterController::class ,'index'])->name('dokter.index');
+Route::get('/dokter/jadwal', [DokterController::class ,'jadwal'])->name('dokter.jadwal');
 

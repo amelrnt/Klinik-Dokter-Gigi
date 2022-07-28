@@ -6,12 +6,14 @@ use App\Models\Admin;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
+use App\Models\Barang;
 
 class AdminController extends Controller
 {
-    public function index($id)
+    public function index()
     {
-        $data = User::where(['iduser'=>$id])->first();
+        $data = User::where(['iduser'=>Session::get('iduser')])->first();
         return view('admin/index',['data'=>$data]);
     }
 
@@ -23,9 +25,41 @@ class AdminController extends Controller
         return view('admin/barang',['barang'=>$data]);
     }
 
-    public function addBarang()
+    public function inputNewBarang(){
+        return view('admin/tambahbarang');
+    }
+
+    public function addBarang(Request $request)
     {
+
+        $request->validate([
+            'nama_barang' => 'required',
+            'harga_barang' => 'required',
+            'stok_barang' => 'required'
+        ],
+        [
+            'nama_barang.required' => 'Nama barang harus diinput',
+            'harga_barang.required' => 'Harga barang harus diinput',
+            'stok_barang.required' => 'Stok barang harus diinput',
+        ]);
+
+        $data = [
+            'nama_barang' => $request->input('nama_barang'),
+            'harga_barang' => $request->input('harga_barang'),
+            'stok_barang' => $request->input('stok_barang')
+        ];
+
+        $add_barang = DB::table('barang')->insert($data);
         
+
+        if($add_barang){
+            Session::flash('message', 'Barang berhasil ditambah');
+            Session::flash('alert-class', 'alert-success'); 
+        }else{
+            Session::flash('message', 'Barang gagal ditambah!');
+            Session::flash('alert-class', 'alert-danger'); 
+        }
+        return redirect(route('admin.barang'));
     }
 
     public function verifUser()
@@ -77,6 +111,10 @@ class AdminController extends Controller
         return view('admin/jadwal',['jadwal'=>$jadwal]);
     }
 
+    public function addNewJadwal(){
+        return view('admin/tambahjadwal');
+    }
+
 
     public function showTransaksi()
     {
@@ -94,6 +132,37 @@ class AdminController extends Controller
         return view('admin/transaksi',['transaksi'=>$transaksi]);
     }
 
-    
-    
+    public function updateBarang(Request $request, $idbarang){
+        $data = [
+            'nama_barang' => $request->input('nama_barang_'.$idbarang),
+            'harga_barang' => $request->input('harga_barang_'.$idbarang),
+            'stok_barang' => $request->input('stok_barang_'.$idbarang)
+        ];
+
+        $barang = Barang::findOrFail($idbarang)
+                        ->update($data);
+
+        if($barang){
+            Session::flash('message', 'Barang berhasil diupdate');
+            Session::flash('alert-class', 'alert-success'); 
+        }else{
+            Session::flash('message', 'Barang gagal diupdate!');
+            Session::flash('alert-class', 'alert-danger'); 
+        }
+        return redirect(route('admin.barang'));
+    }
+
+    public function deleteBarang($idbarang){
+        $barang = Barang::findOrFail($idbarang)
+                    ->delete();
+
+        if($barang){
+            Session::flash('message', 'Barang berhasil dihapus');
+            Session::flash('alert-class', 'alert-success'); 
+        }else{
+            Session::flash('message', 'Barang gagal dihapus!');
+            Session::flash('alert-class', 'alert-danger'); 
+        }
+        return redirect(route('admin.barang'));
+    }
 }

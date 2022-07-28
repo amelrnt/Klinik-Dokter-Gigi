@@ -5,17 +5,18 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Login;
+use Illuminate\Support\Facades\Session;
 
 class ProfileController extends Controller
 {
-    public function profile($id){
-        $data = User::where(['iduser'=>$id])->first();
+    public function profile(){
+        $data = User::where(['iduser'=>Session::get('iduser')])->first();
         // var_dump($data);
         return view('authentication/profile',['data'=>$data]);
     }
 
-    public function edit($id){
-        $data = Login::select('*')->where(['user_iduser'=>$id])->first();
+    public function edit(){
+        $data = Login::select('*')->where(['user_iduser'=>Session::get('iduser')])->first();
         // var_dump($data);
         return view('authentication/edit',['data'=>$data]);
     }
@@ -32,9 +33,9 @@ class ProfileController extends Controller
         $data->user->alamat = $request->input('alamat');
 
         if($data->update() && $data->user->update()){
-            return redirect(route('profile',$request->input('iduser')));
+            return redirect(route('profile'));
         }else{
-            return redirect(route('edit.profile',$request->input('iduser')));
+            return redirect(route('edit.profile'));
         }
     }
 }

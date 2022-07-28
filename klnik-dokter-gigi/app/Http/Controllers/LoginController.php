@@ -37,16 +37,16 @@ class LoginController extends Controller
         
         if($login->count() > 0){
             if($login->level == 'admin'){
-                return redirect('admin/'.$login->iduser);
+                return redirect('admin');
             }
             if($login->level == 'pemilik'){
-                return redirect('owner/'.$login->iduser);
+                return redirect('owner');
             }
             if($login->level == 'dokter'){
-                return redirect('dokter/'.$login->iduser);
+                return redirect('dokter');
             }
             if($login->level == 'pasien'){
-                return redirect('pasien/'.$login->iduser);
+                return redirect('pasien');
             }
         }else{
             return response()->json(['status'=>'failed!','message'=>'user not found!'], Response::HTTP_BAD_REQUEST);
@@ -59,7 +59,5 @@ class LoginController extends Controller
 
         return redirect('login');
     }
-
-    
 
 }

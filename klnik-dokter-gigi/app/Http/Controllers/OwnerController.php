@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Session;
 
 class OwnerController extends Controller
 {
-    public function index($id)
+    public function index()
     {
-        $data = User::where(['iduser'=>$id])->first();
+        $data = User::where(['iduser'=>Session::get('iduser')])->first();
         return view('owner/index',['data'=>$data]);
     }
 

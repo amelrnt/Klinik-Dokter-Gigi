@@ -33,7 +33,7 @@
                                                     <td>{{$j->hari}}</td>
                                                     <td>{{$j->jam}}</td>
                                                     <td>{{$j->nama_user}}</td>
-                                                    <td><a href="{{route('daftar.checkup',['id'=>Session::get('iduser'),'jadwal'=>$j->jadwal_praktik_idjadwal_praktik])}}" class="btn btn-success">Daftar</a></td>
+                                                    <td><a href="{{route('daftar.checkup',['jadwal'=>$j->jadwal_praktik_idjadwal_praktik])}}" class="btn btn-success">Daftar</a></td>
                                                 </tr>
                                                 @endforeach
                                             @else:

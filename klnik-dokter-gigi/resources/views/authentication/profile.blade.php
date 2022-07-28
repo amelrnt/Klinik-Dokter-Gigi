@@ -56,7 +56,7 @@
                                         <div class="row">
                                             <div class="col">
                                                 {{-- Button to edit --}}
-                                                <a class="btn btn-warning" href="{{route('edit.profile',Session::get('iduser'))}}">Edit</a>
+                                                <a class="btn btn-warning" href="{{route('edit.profile')}}">Edit</a>
                                             </div>
                                             <div class="col">
                                             </div>

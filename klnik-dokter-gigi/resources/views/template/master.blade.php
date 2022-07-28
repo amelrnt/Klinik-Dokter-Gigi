@@ -34,13 +34,13 @@
 
             <!-- Sidebar - Brand -->
             @if(Session::get('level') == 'dokter')
-                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{route('dokter.index', Session::get('iduser'))}}">
+                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{route('dokter.index')}}">
             @elseif(Session::get('level') == 'pasien')
-                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{route('pasien.index', Session::get('iduser'))}}">
+                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{route('pasien.index')}}">
             @elseif(Session::get('level') == 'admin')
-                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{route('admin.index', Session::get('iduser'))}}">
+                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{route('admin.index')}}">
             @elseif(Session::get('level') == 'pemilik')
-                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{route('owner.index', Session::get('iduser'))}}">        
+                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{route('owner.index')}}">        
             @endif
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
@@ -54,13 +54,13 @@
             <!-- Nav Item - Dashboard -->
             <li class="nav-item active">
                 @if(Session::get('level') == 'dokter')
-                <a class="nav-link" href="{{route('dokter.index', Session::get('iduser'))}}">
+                <a class="nav-link" href="{{route('dokter.index')}}">
                 @elseif(Session::get('level') == 'pasien')
-                <a class="nav-link" href="{{route('pasien.index', Session::get('iduser'))}}">
+                <a class="nav-link" href="{{route('pasien.index')}}">
                 @elseif(Session::get('level') == 'admin')
-                <a class="nav-link" href="{{route('admin.index', Session::get('iduser'))}}">
+                <a class="nav-link" href="{{route('admin.index')}}">
                 @elseif(Session::get('level') == 'pemilik')
-                <a class="nav-link" href="{{route('owner.index', Session::get('iduser'))}}">
+                <a class="nav-link" href="{{route('owner.index')}}">
                 @endif
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
@@ -85,13 +85,13 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Checkup Screens</h6>
                         <a class="collapse-item" href="{{route('list.jadwal')}}">Cek Jadwal</a>
-                        <a class="collapse-item" href="{{route('list.riwayat', Session::get('iduser'))}}">Riwayat</a>
+                        <a class="collapse-item" href="{{route('list.riwayat')}}">Riwayat</a>
                     </div>
                 </div>
             </li>
             
             <li class="nav-item">
-                <a class="nav-link" href="{{route('list.barang', Session::get('iduser'))}}">
+                <a class="nav-link" href="{{route('list.barang')}}">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Riwayat Barang</span></a>
             </li>
@@ -99,7 +99,7 @@
 
             <!-- Nav Item - Charts -->
             <li class="nav-item">
-                <a class="nav-link" href="{{route('dokter.jadwal',Session::get('iduser'))}}">
+                <a class="nav-link" href="{{route('dokter.jadwal')}}">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Jadwal Checkup</span></a>
             </li>
@@ -107,27 +107,27 @@
             @elseif(Session::get('level') == 'admin')
 
             <li class="nav-item">
-                <a class="nav-link" href="{{route('admin.barang', Session::get('iduser'))}}">
+                <a class="nav-link" href="{{route('admin.barang')}}">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Kelola Barang</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{route('admin.verif', Session::get('iduser'))}}">
+                <a class="nav-link" href="{{route('admin.verif')}}">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Assign User</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{route('admin.jadwal', Session::get('iduser'))}}">
+                <a class="nav-link" href="{{route('admin.jadwal')}}">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Setujui Jadwal</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{route('admin.jadwaldokter', Session::get('iduser'))}}">  
+                <a class="nav-link" href="{{route('admin.jadwaldokter')}}">  
                     <i class="fas fa-fw fa-table"></i>
                     <span>Kelola Jadwal Dokter</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{route('admin.transaksi', Session::get('iduser'))}}">
+                <a class="nav-link" href="{{route('admin.transaksi')}}">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Data Transaksi</span></a>
             </li>
@@ -191,7 +191,7 @@
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="{{route('profile',Session::get('iduser'))}}">
+                                <a class="dropdown-item" href="{{route('profile')}}">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Profile
                                 </a>

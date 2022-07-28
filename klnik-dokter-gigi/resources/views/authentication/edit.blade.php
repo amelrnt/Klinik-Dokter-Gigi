@@ -10,6 +10,17 @@
                         <!-- Page Heading -->
                         <h1 class="h3 mb-2 text-gray-800">Edit Profile</h1>
                         <!-- DataTales Example -->
+
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
                         <form name="editform" method="POST" action="{{route('update.profile')}}" class="mt-5">
                             @csrf
                             <div class="mb-3">
@@ -44,6 +55,7 @@
                                 <label class="form-check-label" for="tampilPassword">Tampilkan password</label>
                             </div>
                             <button type="submit" class="btn btn-primary">Submit</button>
+                            <a class="btn btn-outline-danger" href="{{route('profile')}}">Batal</a>
                         </form>
 
                 </div>
