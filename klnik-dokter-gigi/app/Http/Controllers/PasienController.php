@@ -15,10 +15,10 @@ class PasienController extends Controller
     {   
         $barang = DB::table('transaksi_detail as td')
                     ->join('transaksi as t', 'td.transaksi_idtransaksi', '=', 't.idtransaksi')
-                    ->join('user as u', 't.user_iduser', '=', 'u.iduser')
+                    ->join('pasien as p', 't.pasien_idpasien', '=', 'p.idpasien')
                     ->join('barang as b', 'td.barang_idbarang', '=', 'b.idbarang')
-                    ->select('td.*', 'u.*', 'b.*','t.created_at')
-                    ->where('u.iduser',Session::get('iduser'))
+                    ->select('td.*','p.*' ,'b.*','t.created_at')
+                    ->where('p.user_iduser',Session::get('iduser'))
                     ->get();
 
         $jadwal = DB::table('jadwal_praktik')
@@ -56,36 +56,38 @@ class PasienController extends Controller
         return view('pasien/jadwalcheckup',['jadwal'=>$jadwal]);
     }
 
-    public function get_id_jadwal($id){
+    public function input_jadwal_checkup($id){
         $jadwal = DB::table('jadwal_praktik')
                     ->join('dokter', 'jadwal_praktik.dokter_iddokter', '=', 'dokter.iddokter')
-                    ->join('user', 'dokter.user_iduser', '=', 'user.iduser')
-                    ->select('jadwal_praktik.idjadwal_praktik','jadwal_praktik.hari', 'jadwal_praktik.jam', 'user.nama_user','user.iduser')
+                    ->select('jadwal_praktik.idjadwal_praktik', 'dokter.iddokter')
                     ->where('jadwal_praktik.idjadwal_praktik',$id)
                     ->first();
 
-        return $jadwal;
+                    return view('pasien/inputcheckup',['jadwal'=>$jadwal]);
     }
 
-    public function store_jadwal(Request $request,$idjadwal){
+    public function store_jadwal(Request $request){
 
         // Create the timestamp from the given date
-        $timestamp = strtotime($request->input('tanggal_'.$idjadwal));
-         
+        $tgl = $request->input('tanggal');
+        
+        $timestamp = strtotime($tgl);
+        
         // Create the new format from the timestamp
         $tanggal = date("Y-m-d", $timestamp);
-
-        $idpasien = DB::table('pasien')->where('user_iduser',Session::get('iduser'))->select('idpasien')->first();
-
+        
+        $pasien = DB::table('pasien')->where('user_iduser',Session::get('iduser'))->select('idpasien')->first();
+        
         $jadwal = DB::table('praktik_dijadwalkan')
                     ->insert([
                         'tanggal'=> $tanggal,
-                        'keterangan' => $request->input('keterangan_'.$idjadwal),
-                        'jadwal_praktik_idjadwal_praktik'=> $idjadwal,
-                        'pasien_idpasien'=> (string)$idpasien,
-                        'dokter_iddokter'=> $request->input('id_dokter_'.$idjadwal),
-                        'status'=> '0'
+                        'keterangan' => $request->input('keterangan'),
+                        'jadwal_praktik_idjadwal_praktik'=> $request->input('idjadwal_praktik'),
+                        'pasien_idpasien'=> $pasien->idpasien,
+                        'dokter_iddokter'=> $request->input('id_dokter'),
+                        'status' => '0'
                     ]);
+        
         if($jadwal){
             Session::flash('message', 'Jadwal berhasil ditambah');
             Session::flash('alert-class', 'alert-success'); 
@@ -100,10 +102,10 @@ class PasienController extends Controller
     public function barang(){
         $barang = DB::table('transaksi_detail as td')
                     ->join('transaksi as t', 'td.transaksi_idtransaksi', '=', 't.idtransaksi')
-                    ->join('user as u', 't.user_iduser', '=', 'u.iduser')
                     ->join('barang as b', 'td.barang_idbarang', '=', 'b.idbarang')
-                    ->select('td.*', 'u.*', 'b.*','t.created_at')
-                    ->where('u.iduser',Session::get('iduser'))
+                    ->join('pasien as p','t.pasien_idpasien','=','p.idpasien')
+                    ->select('td.*', 'p.*', 'b.*','t.created_at')
+                    ->where('p.user_iduser',Session::get('iduser'))
                     ->get();
 
         return view('pasien/barang',['barang'=>$barang]);

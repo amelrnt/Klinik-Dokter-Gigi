@@ -134,6 +134,59 @@ class AdminController extends Controller
         return view('admin/tambahjadwal',['dokter'=>$dokter]);
     }
 
+    public function storeJadwal(Request $request){
+        $storeJadwal = DB::table('jadwal_praktik')
+                        ->insert([
+                            'hari' => $request->input('hari'),
+                            'jam' => $request->input('jam').':'.$request->input('menit'),
+                            'dokter_iddokter' => $request->input('id_dokter')
+                        ]);
+        if($storeJadwal){
+            Session::flash('message', 'Jadwal berhasil ditambah!');
+            Session::flash('alert-class', 'alert-success'); 
+        }else{
+            Session::flash('message', 'Jadwal gagal ditambah!');
+            Session::flash('alert-class', 'alert-danger'); 
+        }
+            return redirect(route('admin.jadwaldokter'));        
+    }
+
+    public function updateJadwal(Request $request, $idjadwal){
+        $data = [
+            'hari' => $request->input('hari_'.$idjadwal),
+            'jam' => $request->input('jam_'.$idjadwal).':'.$request->input('menit_'.$idjadwal),
+            'dokter_iddokter' => $request->input('nama_dokter_'.$idjadwal)
+        ];
+
+        $jadwal = DB::table('jadwal_praktik')
+                    ->where('idjadwal_praktik',$idjadwal)
+                    ->update($data);
+
+        if($jadwal){
+            Session::flash('message', 'Jadwal berhasil diupdate');
+            Session::flash('alert-class', 'alert-success'); 
+        }else{
+            Session::flash('message', 'Jadwal gagal diupdate!');
+            Session::flash('alert-class', 'alert-danger'); 
+        }
+        return redirect(route('admin.jadwaldokter'));
+    }
+
+    public function deletejadwal($idjadwal){
+        
+        $jadwal = DB::table('jadwal_praktik')
+        ->where('idjadwal_praktik',$idjadwal)
+        ->delete();
+
+        if($jadwal){
+            Session::flash('message', 'Jadwal berhasil dihapus');
+            Session::flash('alert-class', 'alert-success'); 
+        }else{
+            Session::flash('message', 'Jadwal gagal dihapu!');
+            Session::flash('alert-class', 'alert-danger'); 
+        }
+        return redirect(route('admin.jadwaldokter'));
+    }
 
     public function showTransaksi()
     {

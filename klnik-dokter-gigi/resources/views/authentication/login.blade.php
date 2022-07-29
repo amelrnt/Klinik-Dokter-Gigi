@@ -31,7 +31,11 @@
                                             </ul>
                                         </div>
                                     @endif
-
+                                    
+                                    @if(Session::has('message'))
+                                    <p class="alert {{ Session::get('alert-class') }}">{{ Session::get('message') }}</p>
+                                    @endif
+                                    
                                     <form method="POST" action="/authenticate" class="user">
                                         @csrf
                                         <div class="form-group">
@@ -43,13 +47,13 @@
                                             <input type="password" class="form-control form-control-user"
                                                 id="password" name="password" placeholder="Password">
                                         </div>
-                                        <div class="form-group">
+                                        {{-- <div class="form-group">
                                             <div class="custom-control custom-checkbox small">
                                                 <input type="checkbox" class="custom-control-input" id="customCheck">
                                                 <label class="custom-control-label" for="customCheck">Remember
                                                     Me</label>
                                             </div>
-                                        </div>
+                                        </div> --}}
                                         <button type="submit" class="btn btn-primary btn-user btn-block">
                                             Login
                                         </button>

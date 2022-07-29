@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Response;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -29,27 +30,32 @@ class LoginController extends Controller
             'password.required' => 'Password harus diinput'
         ]);
 
-        $login = Login::where(['username'=>$username,'password'=>$password])->first()->user;
+        // $login = Login::where(['username'=>$username,'password'=>$password])->first()->user;
         
-        $data = User::where(['iduser'=>$login->iduser])->first();
-        
-        session(['iduser'=>$login->iduser,'nama_user'=>$data->nama_user,'alamat'=>$data->alamat,'noHp'=>$data->noHp,'email'=>$data->email,'level'=>$data->level]);
-        
-        if($login->count() > 0){
-            if($login->level == 'admin'){
+        $data = User::where(['username'=>$username,'password'=>$password])->first();
+        var_dump($data);
+        if($data != null){
+            
+            $request->session()->regenerate();
+            
+            session(['iduser'=>$data->iduser,'nama_user'=>$data->nama_user,'alamat'=>$data->alamat,'noHp'=>$data->noHp,'email'=>$data->email,'level'=>$data->level]);
+            
+            if($data->level == 'admin'){
                 return redirect('admin');
             }
-            if($login->level == 'pemilik'){
+            if($data->level == 'pemilik'){
                 return redirect('owner');
             }
-            if($login->level == 'dokter'){
+            if($data->level == 'dokter'){
                 return redirect('dokter');
             }
-            if($login->level == 'pasien'){
+            if($data->level == 'pasien'){
                 return redirect('pasien');
             }
         }else{
-            return response()->json(['status'=>'failed!','message'=>'user not found!'], Response::HTTP_BAD_REQUEST);
+            Session::flash('message', 'Anda belum terdaftar!');
+            Session::flash('alert-class', 'alert-danger'); 
+            return back();
         }
     }
 

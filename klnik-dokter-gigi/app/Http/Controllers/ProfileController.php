@@ -16,7 +16,7 @@ class ProfileController extends Controller
     }
 
     public function edit(){
-        $data = Login::select('*')->where(['user_iduser'=>Session::get('iduser')])->first();
+        $data = User::select('*')->where(['iduser'=>Session::get('iduser')])->first();
         // var_dump($data);
         return view('authentication/edit',['data'=>$data]);
     }

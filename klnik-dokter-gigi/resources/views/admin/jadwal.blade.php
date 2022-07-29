@@ -9,6 +9,9 @@
 
                         <!-- Page Heading -->
                         <h1 class="h3 mb-2 text-gray-800">Tabel</h1>
+                        @if(Session::has('message'))
+                            <p class="alert {{ Session::get('alert-class') }}">{{ Session::get('message') }}</p>
+                        @endif
                         <!-- DataTales Example -->
                         <div class="card shadow mb-4">
                             <div class="card-header py-3">
@@ -35,7 +38,7 @@
                                                     <td>{{$j->nama_user}}</td>
                                                     <td>
                                                     <a href="#" data-toggle="modal" data-target="#editModal-{{$j->idjadwal_praktik}}" class="btn btn-success">Edit</a>
-                                                    <a href="#" class="btn btn-danger">Hapus</a>
+                                                    <a href="{{route('admin.delete.jadwal',$j->idjadwal_praktik)}}" class="btn btn-danger">Hapus</a>
                                                     </td>
                                                 </tr>
                                                 <!-- Edit Modal-->
@@ -50,7 +53,7 @@
                                                                     </button>
                                                                 </div>
                                                                 <div class="modal-body">
-                                                                    <form name="editform_{{$j->idjadwal_praktik}}" method="POST" action="#">
+                                                                    <form name="editform_{{$j->idjadwal_praktik}}" method="POST" action="{{route('admin.update.jadwal',$j->idjadwal_praktik)}}">
                                                                         @method('PUT')
                                                                         @csrf
                                                                         <input type="text" class="form-control" name="id_barang" id="id_barang" aria-describedby="idJadwalPraktikHelp" value="{{$j->idjadwal_praktik}}" hidden>
@@ -104,7 +107,7 @@
                                                                         </div>
                                                                         <div class="mb-3">
                                                                             <label for="nama_dokter" class="form-label">Nama Dokter</label>
-                                                                            <select class="form-control" name="nama_dokter" id="nama_dokter" aria-describedby="namaDokterHelp">
+                                                                            <select class="form-control" name="nama_dokter_{{$j->idjadwal_praktik}}" id="nama_dokter" aria-describedby="namaDokterHelp">
                                                                                 @if($dokter != null)
                                                                                     @foreach($dokter as $d)
                                                                                         @if($d->iddokter == $j->dokter_iddokter)
@@ -117,7 +120,7 @@
                                                                             </select>
                                                                         </div>
                                                                         <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-                                                                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Batal</button>
+                                                                        <a class="btn btn-secondary" href="#" data-dismiss="modal">Batal</a>
                                                                     </form>
                                                                 </div>
                                                             </div>
@@ -130,8 +133,8 @@
                                                 <td> </td>
                                                 <td> </td>
                                                 <td>
-                                                <button type="button" class="btn btn-success">Edit</button>
-                                                <button type="button" class="btn btn-danger">Hapus</button>
+                                                <a type="button" class="btn btn-success">Edit</a>
+                                                <a type="button" class="btn btn-danger">Hapus</a>
                                                 </td>
                                             </tr>
                                             @endif

@@ -20,9 +20,9 @@
                             </div>
                         @endif
 
-                        <form name="inputform" method="POST" action="#" class="mt-5">
+                        <form name="inputform" method="POST" action="{{route('admin.store.jadwal')}}" class="mt-5">
                             @csrf
-                            <div class="mb-3">
+                            {{-- <div class="mb-3">
                                 <label for="tanggal" class="form-label">Tanggal</label>
                                 <div class="input-group mb-2">
                                     <div class="input-group date" id="datepicker">
@@ -32,7 +32,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="mb-3">
                                 <label for="hari" class="form-label">Hari</label>
                                 <select class="form-control" name="hari" id="hari" aria-describedby="hariHelp">
@@ -74,7 +74,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="nama_dokter" class="form-label">Nama Dokter</label>
-                                <select class="form-control" name="nama_dokter" id="nama_dokter" aria-describedby="namaDokterHelp">
+                                <select class="form-control" name="id_dokter" id="id_dokter" aria-describedby="namaDokterHelp">
                                     @if($dokter != null)
                                         @foreach($dokter as $d)
                                             <option value="{{$d->iddokter}}">{{$d->nama_user}}</option>
@@ -83,7 +83,7 @@
                                 </select>
                             </div>
                             <button type="submit" class="btn btn-primary">Submit</button>
-                            <a class="btn btn-outline-danger" href="{{route('admin.barang')}}">Batal</a>
+                            <a class="btn btn-outline-danger" href="{{route('admin.jadwaldokter')}}">Batal</a>
                         </form>
 
                 </div>
@@ -92,9 +92,9 @@
             </div>
             <!-- End of Main Content -->
 
-            <script>
+            {{-- <script>
                 $('#datepicker').click(function () {
                     $('#datepicker').datepicker()
                 });
-            </script>
+            </script> --}}
 @stop

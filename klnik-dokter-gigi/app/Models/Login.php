@@ -9,11 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 class Login extends Model
 {
     // use HasFactory;
-    public $timestamps = false;
-    protected $table = 'login';
-    protected $primaryKey = 'idlogin';
+    // public $timestamps = false;
+    // protected $table = 'login';
+    // protected $primaryKey = 'idlogin';
 
-    public function user(){
-        return $this->belongsTo('App\Models\User','user_iduser','iduser');
-    }
 }

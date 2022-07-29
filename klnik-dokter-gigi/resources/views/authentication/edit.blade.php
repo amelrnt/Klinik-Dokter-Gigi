@@ -28,19 +28,19 @@
                             </div>
                             <div class="mb-3">
                                 <label for="name" class="form-label">Nama</label>
-                                <input type="text" class="form-control" name="name" id="name" aria-describedby="nameHelp" value="{{$data->user->nama_user}}">
+                                <input type="text" class="form-control" name="name" id="name" aria-describedby="nameHelp" value="{{$data->nama_user}}">
                             </div>
                             <div class="mb-3">
                                 <label for="alamat" class="form-label">Alamat</label>
-                                <input type="text" class="form-control" name="alamat" id="alamat" aria-describedby="alamatHelp" value="{{$data->user->alamat}}">
+                                <input type="text" class="form-control" name="alamat" id="alamat" aria-describedby="alamatHelp" value="{{$data->alamat}}">
                             </div>
                             <div class="mb-3">
                                 <label for="nohp" class="form-label">Nomor Telepon</label>
-                                <input type="text" class="form-control" name="nohp" id="nohp" aria-describedby="nohpHelp" value="{{$data->user->noHp}}">
+                                <input type="text" class="form-control" name="nohp" id="nohp" aria-describedby="nohpHelp" value="{{$data->noHp}}">
                             </div>
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp" value="{{$data->user->email}}">
+                                <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp" value="{{$data->email}}">
                             </div>
                             <div class="mb-3">
                                 <label for="username" class="form-label">Username</label>
