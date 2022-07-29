@@ -54,6 +54,10 @@ Route::put('/admin/updatejadwal/{id}', [AdminController::class ,'updateJadwal'])
 Route::get('/admin/deletejadwal/{id}', [AdminController::class ,'deleteJadwal'])->name('admin.delete.jadwal');
 
 Route::get('/owner', [OwnerController::class ,'index'])->name('owner.index');
+Route::get('/owner/barangowner', [OwnerController::class ,'allBarang'])->name('owner.barang');
+Route::get('/owner/jadwalowner', [OwnerController::class ,'showJadwal'])->name('owner.jadwal');
+Route::get('/owner/jadwaldisetujui', [OwnerController::class ,'jadwal'])->name('owner.jadwaldisetujui');
+Route::get('/owner/transaksiowner', [OwnerController::class ,'showTransaksi'])->name('owner.transaksi');
 
 Route::get('/pasien', [PasienController::class ,'index'])->name('pasien.index');
 Route::get('/pasien/riwayat', [PasienController::class ,'riwayat'])->name('list.riwayat');

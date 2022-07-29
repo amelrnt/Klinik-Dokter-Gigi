@@ -1,6 +1,6 @@
 @extends('template.master')
 
-@section('title', 'Jadwal Dokter')
+@section('title', 'Daftar Transaksi')
 
 @section('content')
 
@@ -12,37 +12,38 @@
                         <!-- DataTales Example -->
                         <div class="card shadow mb-4">
                             <div class="card-header py-3">
-                                <h6 class="m-0 font-weight-bold text-primary">Jadwal Checkup</h6>
+                                <h6 class="m-0 font-weight-bold text-primary">Daftar Transaksi</h6>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
-                                                <th>Tanggal</th>
-                                                <th>Hari</th>
-                                                <th>Jam</th>
-                                                <th>Keterangan</th>
-                                                <th>Nama Pasien</th>
+                                                <th>Nama User</th>
+                                                <th>Nama Layanan</th>
+                                                <th>Harga Layanan</th>
+                                                <th>Waktu</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if($jadwal != null)
-                                                @foreach ($jadwal as $j)
+                                            @if($transaksi != null)
+                                                @foreach ($transaksi as $t)
                                                 <tr>
-                                                    <td>{{$j->tanggal}}</td>
-                                                    <td>{{$j->hari}}</td>
-                                                    <td>{{$j->jam}}</td>
-                                                    <td>{{$j->keterangan}}</td>
-                                                    <td>{{$j->nama_user}}</td>
+                                                    <td>{{$t->nama_user}}</td>
+                                                    <td>{{$t->nama_barang}}</td>
+                                                    <td>Rp. {{$t->harga_barang}}</td>
+                                                    <td>{{$t->created_at}}</td>
                                                 </tr>
                                                 @endforeach
-                                            @else:
+                                            @else
                                             <tr>
-                                                <td>12 Mei 2022</td>
-                                                <td>Senin</td>
-                                                <td>12.00</td>
-                                                <td>Iskandar Tua</td>
+                                                <td>data kosong</td>
+                                                <td> </td>
+                                                <td> </td>
+                                                <td>
+                                                <button type="button" class="btn btn-success">Edit</button>
+                                                <button type="button" class="btn btn-danger">Hapus</button>
+                                                </td>
                                             </tr>
                                             @endif
                                         </tbody>

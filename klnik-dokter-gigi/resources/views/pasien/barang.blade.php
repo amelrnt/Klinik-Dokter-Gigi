@@ -18,21 +18,24 @@
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
-                                                <th>Nama Barang</th>
-                                                <th>Harga Barang</th>
-                                                <th>Jumlah</th>
                                                 <th>Tanggal transaksi</th>
+                                                <th>Nama Barang</th>
+                                                <th>Jumlah Barang</th>
+                                                <th>Keterangan</th>
+                                                <th>Nama Dokter</th>
+                                                <th>Jumlah Pembayaran Total</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if($barang != null)
-                                                @foreach ($barang as $b)
+                                            @if($riwayat != null)
+                                                @foreach ($riwayat as $r)
                                                 <tr>
-                                                    <td>{{$b->nama_barang}}</td>
-                                                    <td>{{$b->harga_barang}}</td>
-                                                    <td>{{$b->jumlah}}</td>
-                                                    <td>{{$b->created_at}}</td>
-                                                </tr>
+                                                    <td>{{$r->tanggal}}</td>
+                                                    <td>{{$r->nama_barang}}</td>
+                                                    <td>{{$r->jumlah}}</td>
+                                                    <td>{{$r->keterangan}}</td>
+                                                    <td>{{$r->dokter}}</td>
+                                                    <td>{{$r->total_harga}}</td>                                                </tr>
                                                 @endforeach
                                             @else:
                                             <tr>

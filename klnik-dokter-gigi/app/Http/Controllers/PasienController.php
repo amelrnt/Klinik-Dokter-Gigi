@@ -13,24 +13,26 @@ class PasienController extends Controller
 {
     public function index()
     {   
-        $barang = DB::table('transaksi_detail as td')
-                    ->join('transaksi as t', 'td.transaksi_idtransaksi', '=', 't.idtransaksi')
-                    ->join('pasien as p', 't.pasien_idpasien', '=', 'p.idpasien')
-                    ->join('barang as b', 'td.barang_idbarang', '=', 'b.idbarang')
-                    ->select('td.*','p.*' ,'b.*','t.created_at')
-                    ->where('p.user_iduser',Session::get('iduser'))
-                    ->get();
+        // SELECT COUNT(transaksi.praktik_dijadwalkan_idpraktik_dijadwalkan) FROM `transaksi` 
+        // INNER JOIN praktik_dijadwalkan ON praktik_dijadwalkan.idpraktik_dijadwalkan = transaksi.praktik_dijadwalkan_idpraktik_dijadwalkan 
+        // INNER JOIN pasien ON pasien.idpasien = praktik_dijadwalkan.pasien_idpasien 
+        // WHERE pasien.user_iduser = 22 AND praktik_dijadwalkan.status = 1
 
-        $jadwal = DB::table('jadwal_praktik')
-                    ->join('dokter', 'jadwal_praktik.dokter_iddokter', '=', 'dokter.iddokter')
-                    ->join('user', 'dokter.user_iduser', '=', 'user.iduser')
-                    ->join('praktik_dijadwalkan as pd','pd.jadwal_praktik_idjadwal_praktik','=','jadwal_praktik.idjadwal_praktik')
-                    ->select('jadwal_praktik.*', 'user.*', 'pd.tanggal','pd.keterangan','pd.status','pd.jadwal_praktik_idjadwal_praktik')
-                    ->get();
+        $terjadwal = DB::table('transaksi')
+        ->join('praktik_dijadwalkan', 'praktik_dijadwalkan.idpraktik_dijadwalkan', '=', 'transaksi.praktik_dijadwalkan_idpraktik_dijadwalkan')
+        ->join('pasien', 'pasien.idpasien', '=', 'praktik_dijadwalkan.pasien_idpasien')
+        ->where('pasien.user_iduser', Session::get('iduser'))
+        ->where('praktik_dijadwalkan.status', '1')
+        ->count('transaksi.praktik_dijadwalkan_idpraktik_dijadwalkan');
 
-        session(['total_barang'=>count($barang),'total_jadwal'=>count($jadwal)]);
+        $allJadwal = DB::table('transaksi')
+        ->join('praktik_dijadwalkan', 'praktik_dijadwalkan.idpraktik_dijadwalkan', '=', 'transaksi.praktik_dijadwalkan_idpraktik_dijadwalkan')
+        ->join('pasien', 'pasien.idpasien', '=', 'praktik_dijadwalkan.pasien_idpasien')
+        ->where('pasien.user_iduser', Session::get('iduser'))
+        ->count('transaksi.praktik_dijadwalkan_idpraktik_dijadwalkan');
 
-        return view('pasien/index');
+        // return view('pasien/index', ['total_barang'=>count($barang),'total_jadwal'=>count($jadwal)]);
+        return view('pasien/index', ['jadwal'=>$terjadwal,'allJadwal'=>$allJadwal]);
     }
 
     public function riwayat(){
@@ -100,15 +102,30 @@ class PasienController extends Controller
     }
 
     public function barang(){
-        $barang = DB::table('transaksi_detail as td')
-                    ->join('transaksi as t', 'td.transaksi_idtransaksi', '=', 't.idtransaksi')
-                    ->join('barang as b', 'td.barang_idbarang', '=', 'b.idbarang')
-                    ->join('pasien as p','t.pasien_idpasien','=','p.idpasien')
-                    ->select('td.*', 'p.*', 'b.*','t.created_at')
-                    ->where('p.user_iduser',Session::get('iduser'))
-                    ->get();
+        // SELECT transaksi.metode_pembayaran, transaksi.metode_pembayaran, barang.nama_barang, transaksi_detail.jumlah, praktik_dijadwalkan.tanggal, praktik_dijadwalkan.keterangan, u1.nama_user AS dokter, u2.nama_user as nama_pasien FROM `transaksi` 
+        // INNER JOIN transaksi_detail ON transaksi.idtransaksi = transaksi_detail.transaksi_idtransaksi 
+        // INNER JOIN praktik_dijadwalkan ON praktik_dijadwalkan.idpraktik_dijadwalkan = transaksi.praktik_dijadwalkan_idpraktik_dijadwalkan 
+        // INNER JOIN barang ON barang.idbarang = transaksi_detail.barang_idbarang 
+        // INNER JOIN dokter ON dokter.iddokter = praktik_dijadwalkan.dokter_iddokter 
+        // INNER JOIN user AS u1 ON dokter.user_iduser = u1.iduser 
+        // INNER JOIN pasien ON praktik_dijadwalkan.pasien_idpasien = pasien.idpasien 
+        // INNER JOIN user AS u2 ON u2.iduser = pasien.user_iduser 
+        // WHERE u2.iduser = 22 AND praktik_dijadwalkan.status = 1
 
-        return view('pasien/barang',['barang'=>$barang]);
+        $riwayat = DB::table('transaksi')
+        ->join('transaksi_detail', 'transaksi.idtransaksi', '=', 'transaksi_detail.transaksi_idtransaksi')
+        ->join('praktik_dijadwalkan', 'praktik_dijadwalkan.idpraktik_dijadwalkan', '=', 'transaksi.praktik_dijadwalkan_idpraktik_dijadwalkan')
+        ->join('barang', 'barang.idbarang', '=', 'transaksi_detail.barang_idbarang')
+        ->join('dokter', 'dokter.iddokter', '=', 'praktik_dijadwalkan.dokter_iddokter')
+        ->join('user AS u1', 'dokter.user_iduser', '=', 'u1.iduser')
+        ->join('pasien', 'praktik_dijadwalkan.pasien_idpasien', '=', 'pasien.idpasien')
+        ->join('user AS u2', 'u2.iduser', '=', 'pasien.user_iduser')
+        ->select('transaksi.total_harga','transaksi.metode_pembayaran', 'transaksi.metode_pembayaran', 'barang.nama_barang', 'transaksi_detail.jumlah', 'praktik_dijadwalkan.tanggal', 'praktik_dijadwalkan.keterangan', 'u1.nama_user AS dokter')
+        ->where('praktik_dijadwalkan.status', '1')
+        ->where('u2.iduser', Session::get('iduser'))
+        ->get();
+
+        return view('pasien/barang',['riwayat'=>$riwayat]);
     }
 
     public function daftar_checkup($jadwal){

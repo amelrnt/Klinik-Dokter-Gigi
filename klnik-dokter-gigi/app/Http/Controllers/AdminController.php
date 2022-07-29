@@ -67,13 +67,11 @@ class AdminController extends Controller
     public function verifUser()
     {
         $dokter = DB::table('user')
-        ->join('login', 'user.iduser', '=', 'login.user_iduser')
         ->leftJoin('dokter', 'user.iduser','=', 'dokter.user_iduser')
         ->where('user.level', "dokter")
         ->get();
 
         $pasien = DB::table('user')
-        ->join('login', 'user.iduser', '=', 'login.user_iduser')
         ->leftJoin('pasien', 'user.iduser','=', 'pasien.user_iduser')
         ->where('user.level', "dokter")
         ->get();

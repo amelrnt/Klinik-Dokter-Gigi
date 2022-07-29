@@ -97,7 +97,7 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Checkup Screens</h6>
                         <a class="collapse-item" href="{{route('list.jadwal')}}">Cek Jadwal</a>
-                        <a class="collapse-item" href="{{route('list.riwayat')}}">Riwayat</a>
+                        <a class="collapse-item" href="{{route('list.riwayat')}}">Riwayat Penjadwalan</a>
                     </div>
                 </div>
             </li>
@@ -105,7 +105,7 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{route('list.barang')}}">
                     <i class="fas fa-fw fa-table"></i>
-                    <span>Riwayat Barang</span></a>
+                    <span>Riwayat Checkup</span></a>
             </li>
             @elseif(Session::get('level') == 'dokter')
 
@@ -146,24 +146,24 @@
             @elseif(Session::get('level') == 'pemilik')
 
             <li class="nav-item">
-                <a class="nav-link" href="">
+                <a class="nav-link" href="{{route('owner.barang')}}">
                     <i class="fas fa-fw fa-table"></i>
-                    <span>Kelola Barang</span></a>
+                    <span>Daftar Barang</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="">
+                <a class="nav-link" href="{{route('owner.jadwal')}}">
                     <i class="fas fa-fw fa-table"></i>
-                    <span>Kelola Jadwal Dokter</span></a>
+                    <span>Daftar Jadwal Dokter</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="">
+                <a class="nav-link" href="{{route('owner.jadwaldisetujui')}}">
                     <i class="fas fa-fw fa-table"></i>
-                    <span>Data Penjadwalan</span></a>
+                    <span>Daftar Data Penjadwalan</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="">
+                <a class="nav-link" href="{{route('owner.transaksi')}}">
                     <i class="fas fa-fw fa-table"></i>
-                    <span>Data Transaksi</span></a>
+                    <span>Daftar Data Transaksi</span></a>
             </li>
             @endif
 

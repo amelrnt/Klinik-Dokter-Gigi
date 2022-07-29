@@ -39,13 +39,21 @@ class DokterController extends Controller
 
 
     public function jadwal(){
-        $jadwal = DB::table('jadwal_praktik')
-                    ->join('dokter', 'jadwal_praktik.dokter_iddokter', '=', 'dokter.iddokter')
-                    ->join('user', 'dokter.user_iduser', '=', 'user.iduser')
-                    ->join('praktik_dijadwalkan as pd','pd.jadwal_praktik_idjadwal_praktik','=','jadwal_praktik.idjadwal_praktik')
-                    ->select('jadwal_praktik.*', 'user.*', 'pd.tanggal','pd.keterangan','pd.status','pd.jadwal_praktik_idjadwal_praktik')
-                    ->where('pd.status','1')
-                    ->where('user.iduser',Session::get('iduser'))
+        // SELECT praktik_dijadwalkan.tanggal, jadwal_praktik.hari, jadwal_praktik.jam, praktik_dijadwalkan.keterangan, user.nama_user FROM `praktik_dijadwalkan` 
+        // INNER JOIN jadwal_praktik ON jadwal_praktik.idjadwal_praktik = praktik_dijadwalkan.jadwal_praktik_idjadwal_praktik 
+        // INNER JOIN pasien ON pasien.idpasien = praktik_dijadwalkan.pasien_idpasien
+        // INNER JOIN user ON user.iduser = pasien.user_iduser 
+        // INNER JOIN dokter ON dokter.iddokter = jadwal_praktik.dokter_iddokter 
+        // WHERE praktik_dijadwalkan.status = 1 AND dokter.user_iduser = 2
+
+        $jadwal = DB::table('praktik_dijadwalkan')
+                    ->join('jadwal_praktik', 'jadwal_praktik.idjadwal_praktik', '=', 'praktik_dijadwalkan.jadwal_praktik_idjadwal_praktik')
+                    ->join('pasien', 'praktik_dijadwalkan.pasien_idpasien', '=', 'pasien.idpasien')
+                    ->join('user', 'user.iduser', '=', 'pasien.user_iduser')
+                    ->join('dokter', 'dokter.iddokter', '=', 'jadwal_praktik.dokter_iddokter')
+                    ->select('praktik_dijadwalkan.tanggal', 'jadwal_praktik.hari', 'jadwal_praktik.jam', 'praktik_dijadwalkan.keterangan', 'user.nama_user')
+                    ->where('praktik_dijadwalkan.status','1')
+                    ->where('dokter.user_iduser',Session::get('iduser'))
                     ->get();
         
         return view('dokter/jadwal',['jadwal'=>$jadwal]);
