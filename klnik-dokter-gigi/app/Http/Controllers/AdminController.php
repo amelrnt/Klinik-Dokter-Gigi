@@ -201,6 +201,42 @@ class AdminController extends Controller
 
         return view('admin/transaksi',['transaksi'=>$transaksi]);
     }
+    
+    public function pilihJadwalTransaksi(){
+        $jadwal = DB::table('praktik_dijadwalkan')
+        ->join('jadwal_praktik', 'praktik_dijadwalkan.jadwal_praktik_idjadwal_praktik', '=', 'jadwal_praktik.idjadwal_praktik')
+        ->join('pasien', 'praktik_dijadwalkan.pasien_idpasien', '=', 'pasien.idpasien')
+        ->join('dokter', 'dokter.iddokter', '=', 'praktik_dijadwalkan.dokter_iddokter')
+        ->join('user as u1' , 'u1.iduser', '=', 'pasien.user_iduser')
+        ->join('user as u2', 'u2.iduser', '=', 'dokter.user_iduser')
+        ->select('praktik_dijadwalkan.idpraktik_dijadwalkan','praktik_dijadwalkan.tanggal', 'jadwal_praktik.hari', 'jadwal_praktik.jam', 'praktik_dijadwalkan.keterangan', 'praktik_dijadwalkan.status', 'u1.nama_user as namapasien', 'u2.nama_user as namadokter')
+        ->where('praktik_dijadwalkan.status','1')
+        ->get();
+        
+        return view('admin/transaksiinputjadwal',['jadwal'=>$jadwal]);
+    }
+        public function inputTransaksi($idjadwal){
+    
+            $user = DB::table('user')
+                        ->join('pasien','pasien.user_iduser','=','user.iduser')
+                        ->where('user.level','pasien')
+                        ->select('pasien.idpasien','user.nama_user')->get();
+            
+            $barang = DB::table('barang')->select('*')->get();
+
+            $jadwal = DB::table('praktik_dijadwalkan')
+                        // ->join('jadwal_praktik', 'praktik_dijadwalkan.jadwal_praktik_idjadwal_praktik', '=', 'jadwal_praktik.idjadwal_praktik')
+                        // ->join('pasien', 'praktik_dijadwalkan.pasien_idpasien', '=', 'pasien.idpasien')
+                        // ->join('dokter', 'dokter.iddokter', '=', 'praktik_dijadwalkan.dokter_iddokter')
+                        // ->join('user as u1' , 'u1.iduser', '=', 'pasien.user_iduser')
+                        // ->join('user as u2', 'u2.iduser', '=', 'dokter.user_iduser')
+                        ->select('praktik_dijadwalkan.*')
+                        // ->where('praktik_dijadwalkan.status','1')
+                        ->where('praktik_dijadwalkan.idpraktik_dijadwalkan',$idjadwal)
+                        ->first();
+            // var_dump($jadwal);
+            return view('admin/tambahtransaksi',['user'=>$user,'jadwal'=>$jadwal,'barang'=>$barang]);
+        }
 
     public function updateBarang(Request $request, $idbarang){
         $data = [

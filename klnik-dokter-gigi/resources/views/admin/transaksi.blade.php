@@ -10,9 +10,13 @@
                         <!-- Page Heading -->
                         <h1 class="h3 mb-2 text-gray-800">Tabel</h1>
                         <!-- DataTales Example -->
+                        @if(Session::has('message'))
+                            <p class="alert {{ Session::get('alert-class') }}">{{ Session::get('message') }}</p>
+                        @endif
                         <div class="card shadow mb-4">
                             <div class="card-header py-3">
                                 <h6 class="m-0 font-weight-bold text-primary">Daftar Transaksi</h6>
+                                <a href="{{route('admin.tambah.jadwaltransaksi')}}" class="btn btn-primary">Tambah Data</a>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">

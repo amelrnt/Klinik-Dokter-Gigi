@@ -1,6 +1,6 @@
 @extends('template.master')
 
-@section('title', 'Verifikasi Jadwal')
+@section('title', 'Input Tanggal Transaksi')
 
 @section('content')
 
@@ -25,25 +25,27 @@
                                               <th>Nama Pasien</th>
                                               <th>Nama Dokter</th>
                                               <th>Status</th>
+                                              <th>Opsi</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @if($jadwal != null)
                                                 @foreach ($jadwal as $j)
                                                 <tr>
-                                                  <td>{{$j->tanggal}}</td>
-                                                  <td>{{$j->hari}}</td>
-                                                  <td>{{$j->jam}}</td>
-                                                  <td>{{$j->namapasien}}</td>
-                                                  <td>{{$j->namadokter}}</td>
-                                                  @if($j->status == 1)
-                                                  <td>Disetujui</td>
-                                                  @else
+                                                    <td>{{$j->tanggal}}</td>
+                                                    <td>{{$j->hari}}</td>
+                                                    <td>{{$j->jam}}</td>
+                                                    <td>{{$j->namapasien}}</td>
+                                                    <td>{{$j->namadokter}}</td>
+                                                    @if($j->status == 1)
+                                                    <td>Disetujui</td>
+                                                    @else
                                                     <td>
                                                     <button type="button" class="btn btn-success">Terima</button>
                                                     <button type="button" class="btn btn-danger">Tolak</button>
                                                     </td>
-                                                  @endif  
+                                                    @endif  
+                                                    <td><a href="{{route('admin.tambah.transaksi',$j->idpraktik_dijadwalkan)}}" class="btn btn-primary">Input Transaksi</a></td>
                                                 </tr>
                                                 @endforeach
                                             @else

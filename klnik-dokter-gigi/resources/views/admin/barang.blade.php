@@ -14,8 +14,6 @@
                             <div class="card-header py-3">
                                 <h6 class="m-0 font-weight-bold text-primary">Daftar Barang</h6>
                                 <a href="{{route('admin.tambah.barang')}}" class="btn btn-primary">Tambah Data</a>
-
-        
                             </div>
 
                             <div class="card-body">

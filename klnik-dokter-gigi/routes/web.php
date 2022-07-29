@@ -46,7 +46,10 @@ Route::put('/admin/updatebarang/{id}', [AdminController::class ,'updatebarang'])
 Route::get('/admin/verif_user', [AdminController::class ,'verifUser'])->name('admin.verif');
 Route::get('/admin/verif_jadwal', [AdminController::class ,'verifJadwal'])->name('admin.jadwal');
 Route::get('/admin/jadwaldokter', [AdminController::class ,'showJadwal'])->name('admin.jadwaldokter');
+
 Route::get('/admin/transaksi', [AdminController::class ,'showTransaksi'])->name('admin.transaksi');
+Route::get('/admin/inputjadwaltransaksi', [AdminController::class ,'pilihJadwalTransaksi'])->name('admin.tambah.jadwaltransaksi');
+Route::get('/admin/inputtransaksi/{id}', [AdminController::class ,'inputTransaksi'])->name('admin.tambah.transaksi');
 
 Route::get('/admin/inputjadwal', [AdminController::class ,'addNewJadwal'])->name('admin.input.jadwal');
 Route::post('/admin/storejadwal', [AdminController::class ,'storeJadwal'])->name('admin.store.jadwal');
