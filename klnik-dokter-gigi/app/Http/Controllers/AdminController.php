@@ -188,22 +188,30 @@ class AdminController extends Controller
 
     public function showTransaksi()
     {
-        // SELECT user.nama_user, barang.nama_barang, barang.harga_barang, transaksi.created_at FROM `transaksi_detail` 
-        // INNER JOIN transaksi ON transaksi_detail.transaksi_idtransaksi = transaksi.idtransaksi 
+        // SELECT transaksi.idtransaksi, user.nama_user as pasien, GROUP_CONCAT(barang.nama_barang SEPARATOR ', ') AS nama_barang, transaksi_detail.jumlah, transaksi.metode_pembayaran, transaksi.total_harga, transaksi.created_at FROM transaksi_detail 
+        // INNER JOIN `transaksi`ON transaksi_detail.transaksi_idtransaksi = transaksi.idtransaksi 
+        // INNER JOIN praktik_dijadwalkan ON praktik_dijadwalkan.idpraktik_dijadwalkan = transaksi.praktik_dijadwalkan_idpraktik_dijadwalkan 
         // INNER JOIN barang ON transaksi_detail.barang_idbarang = barang.idbarang 
-        // INNER JOIN user ON transaksi.idtransaksi = user.iduser 
-        $transaksi = DB::table('transaksi')
-        ->join('transaksi_detail', 'transaksi_detail.transaksi_idtransaksi', '=', 'transaksi.idtransaksi')
+        // INNER JOIN pasien ON praktik_dijadwalkan.pasien_idpasien = pasien.idpasien 
+        // INNER JOIN user ON user.iduser = pasien.user_iduser GROUP BY transaksi.idtransaksi
+        
+        $transaksi = DB::table('transaksi_detail')
+        ->join('transaksi', 'transaksi_detail.transaksi_idtransaksi', '=', 'transaksi.idtransaksi')
+        ->join('praktik_dijadwalkan', 'praktik_dijadwalkan.idpraktik_dijadwalkan', '=', 'transaksi.praktik_dijadwalkan_idpraktik_dijadwalkan')
         ->join('barang', 'transaksi_detail.barang_idbarang', '=', 'barang.idbarang')
-        ->join('user', 'transaksi.idtransaksi', '=', 'user.iduser')
-        ->select('user.nama_user', 'barang.nama_barang', 'barang.harga_barang', 'transaksi.created_at')
+        ->join('pasien', 'praktik_dijadwalkan.pasien_idpasien', '=', 'pasien.idpasien')
+        ->join('user', 'pasien.user_iduser', '=', 'user.iduser')
+        ->select('user.nama_user', DB::raw('group_concat(barang.nama_barang) as nama_barang'), 'transaksi_detail.jumlah', 'transaksi.metode_pembayaran', 'transaksi.total_harga', 'transaksi.created_at')
+        ->groupBy('transaksi.idtransaksi')
         ->get();
 
         return view('admin/transaksi',['transaksi'=>$transaksi]);
     }
     
     public function pilihJadwalTransaksi(){
-        $jadwal = DB::table('praktik_dijadwalkan')
+
+        $jadwal = DB::table('transaksi')
+        ->rightJoin('praktik_dijadwalkan', 'transaksi.praktik_dijadwalkan_idpraktik_dijadwalkan','=', 'praktik_dijadwalkan.idpraktik_dijadwalkan')
         ->join('jadwal_praktik', 'praktik_dijadwalkan.jadwal_praktik_idjadwal_praktik', '=', 'jadwal_praktik.idjadwal_praktik')
         ->join('pasien', 'praktik_dijadwalkan.pasien_idpasien', '=', 'pasien.idpasien')
         ->join('dokter', 'dokter.iddokter', '=', 'praktik_dijadwalkan.dokter_iddokter')
@@ -211,32 +219,65 @@ class AdminController extends Controller
         ->join('user as u2', 'u2.iduser', '=', 'dokter.user_iduser')
         ->select('praktik_dijadwalkan.idpraktik_dijadwalkan','praktik_dijadwalkan.tanggal', 'jadwal_praktik.hari', 'jadwal_praktik.jam', 'praktik_dijadwalkan.keterangan', 'praktik_dijadwalkan.status', 'u1.nama_user as namapasien', 'u2.nama_user as namadokter')
         ->where('praktik_dijadwalkan.status','1')
+        ->WhereNull('transaksi.idtransaksi')
         ->get();
         
         return view('admin/transaksiinputjadwal',['jadwal'=>$jadwal]);
     }
-        public function inputTransaksi($idjadwal){
-    
-            $user = DB::table('user')
-                        ->join('pasien','pasien.user_iduser','=','user.iduser')
-                        ->where('user.level','pasien')
-                        ->select('pasien.idpasien','user.nama_user')->get();
-            
-            $barang = DB::table('barang')->select('*')->get();
 
-            $jadwal = DB::table('praktik_dijadwalkan')
-                        // ->join('jadwal_praktik', 'praktik_dijadwalkan.jadwal_praktik_idjadwal_praktik', '=', 'jadwal_praktik.idjadwal_praktik')
-                        // ->join('pasien', 'praktik_dijadwalkan.pasien_idpasien', '=', 'pasien.idpasien')
-                        // ->join('dokter', 'dokter.iddokter', '=', 'praktik_dijadwalkan.dokter_iddokter')
-                        // ->join('user as u1' , 'u1.iduser', '=', 'pasien.user_iduser')
-                        // ->join('user as u2', 'u2.iduser', '=', 'dokter.user_iduser')
-                        ->select('praktik_dijadwalkan.*')
-                        // ->where('praktik_dijadwalkan.status','1')
-                        ->where('praktik_dijadwalkan.idpraktik_dijadwalkan',$idjadwal)
-                        ->first();
-            // var_dump($jadwal);
-            return view('admin/tambahtransaksi',['user'=>$user,'jadwal'=>$jadwal,'barang'=>$barang]);
+    public function inputTransaksi($idjadwal){
+
+        $user = DB::table('user')
+                    ->join('pasien','pasien.user_iduser','=','user.iduser')
+                    ->where('user.level','pasien')
+                    ->select('pasien.idpasien','user.nama_user')->get();
+        
+        $barang = DB::table('barang')->select('*')->get();
+
+        $jadwal = DB::table('praktik_dijadwalkan')
+                    ->select('praktik_dijadwalkan.*')
+                    ->where('praktik_dijadwalkan.idpraktik_dijadwalkan',$idjadwal)
+                    ->first();
+
+        return view('admin/tambahtransaksi',['user'=>$user,'jadwal'=>$jadwal,'barang'=>$barang]);
+    }
+
+    public function transaksiToDB(Request $request,$idjadwal)
+    {
+        // $data = [
+        //     'id_jadwal' => $idjadwal,
+        //     'metode_pembayaran' => $request->input('metode_pembayaran'),
+        //     'id_barang' => $request->input('barang'), 
+        //     'total_harga' => $request->input('harga_barang'),
+        //     'jumlah_barang' => $request->input('jumlah_barang')
+        // ];
+
+        // dd($data);
+
+        $storetransaksi = DB::table('transaksi')
+                        ->insertGetId([
+                            'praktik_dijadwalkan_idpraktik_dijadwalkan' => $idjadwal,
+                            'total_harga' => $request->input('harga_barang'),
+                            'created_at' => now()->format('Y-m-d H:i:s'),
+                        ]);
+
+        $storeTransaksiDetail = DB::table('transaksi_detail')
+        ->insert([
+            'transaksi_idtransaksi' => $storetransaksi,
+            'barang_idbarang' => $request->input('barang'), 
+            'jumlah' => $request->input('jumlah_barang')
+        ]);                
+
+        if ($storeTransaksiDetail) {
+            Session::flash('message', 'Transaksi berhasil ditambahkan!');
+            Session::flash('alert-class', 'alert-success'); 
+        } else{
+        Session::flash('message', 'Transaksi gagal ditambahkan!');
+        Session::flash('alert-class', 'alert-danger'); 
         }
+        
+        return redirect(route('admin.transaksi'));
+    }
 
     public function updateBarang(Request $request, $idbarang){
         $data = [

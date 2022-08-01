@@ -20,7 +20,7 @@
                             </div>
                         @endif
 
-                        <form name="editform" method="POST" action="#" class="mt-5">
+                        <form name="editform" method="POST" action="{{route('admin.transaksi.fix',$jadwal->idpraktik_dijadwalkan)}}" class="mt-5">
                             @csrf
                             <input type="text" name="pasien_idpasien" value="{{$jadwal->pasien_idpasien}}" hidden>
                             <input type="text" name="idpraktik_dijadwalkan" value="{{$jadwal->idpraktik_dijadwalkan}}" hidden>
@@ -50,7 +50,7 @@
                                 <input type="number" class="form-control" name="jumlah_barang" id="jumlah_barang" aria-describedby="jumlahBarangHelp" value="">
                             </div>
                             <button type="submit" class="btn btn-primary">Submit</button>
-                            <a class="btn btn-outline-danger" href="{{route('admin.barang')}}">Batal</a>
+                            <a class="btn btn-outline-danger" href="">Batal</a>
                         </form>
 
                 </div>

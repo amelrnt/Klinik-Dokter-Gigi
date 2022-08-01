@@ -45,17 +45,11 @@ class RegisterController extends Controller
             $user->alamat = $request->input('address');
             $user->email = $request->input('email');
             $user->noHp = $request->input('phoneNumber');
-            $user->level = 'pasien';
+            $user->level = $request->input('role');
+            $user->username = $request->input('username');
+            $user->password = $request->input('password');
 
             if($user->save()){
-                $login = new Login();
-
-                $login->username = $request->input('username');
-                $login->password = $request->input('password');
-                $login->user_iduser = $user->id;
-
-                $login->save();
-
                 return redirect('login');
             }else{
                 return redirect('register');

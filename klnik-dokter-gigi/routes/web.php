@@ -50,6 +50,7 @@ Route::get('/admin/jadwaldokter', [AdminController::class ,'showJadwal'])->name(
 Route::get('/admin/transaksi', [AdminController::class ,'showTransaksi'])->name('admin.transaksi');
 Route::get('/admin/inputjadwaltransaksi', [AdminController::class ,'pilihJadwalTransaksi'])->name('admin.tambah.jadwaltransaksi');
 Route::get('/admin/inputtransaksi/{id}', [AdminController::class ,'inputTransaksi'])->name('admin.tambah.transaksi');
+Route::post('/admin/inputtransaksi/{id}', [AdminController::class ,'transaksiToDB'])->name('admin.transaksi.fix');
 
 Route::get('/admin/inputjadwal', [AdminController::class ,'addNewJadwal'])->name('admin.input.jadwal');
 Route::post('/admin/storejadwal', [AdminController::class ,'storeJadwal'])->name('admin.store.jadwal');

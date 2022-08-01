@@ -25,7 +25,9 @@
                                             <tr>
                                                 <th>Nama User</th>
                                                 <th>Nama Layanan</th>
-                                                <th>Harga Layanan</th>
+                                                <th>Jumlah</th>
+                                                <th>Metode Pembayaran</th>
+                                                <th>Total Harga</th>
                                                 <th>Waktu</th>
                                             </tr>
                                         </thead>
@@ -35,7 +37,9 @@
                                                 <tr>
                                                     <td>{{$t->nama_user}}</td>
                                                     <td>{{$t->nama_barang}}</td>
-                                                    <td>Rp. {{$t->harga_barang}}</td>
+                                                    <td>{{$t->jumlah}}</td>
+                                                    <td>{{$t->metode_pembayaran}}</td>
+                                                    <td>Rp. {{$t->total_harga}}</td>
                                                     <td>{{$t->created_at}}</td>
                                                 </tr>
                                                 @endforeach

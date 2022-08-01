@@ -61,6 +61,13 @@
                                             name="confirmPassword" id="confirmPassword" placeholder="Konfirmasi Password">
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <label for="role" class="form-label">Anda adalah?</label>
+                                    <select class="form-control" name="role" id="role" aria-describedby="role">
+                                        <option value="pasien">Pasien</option>
+                                        <option value="dokter">Dokter</option>
+                                    </select>
+                                </div>
                                 <button type="submit" class="btn btn-primary btn-user btn-block">
                                     Register Account
                                 </button>
