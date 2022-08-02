@@ -16,7 +16,25 @@ class AdminController extends Controller
     public function index()
     {
         $data = User::where(['iduser'=>Session::get('iduser')])->first();
-        return view('admin/index',['data'=>$data]);
+
+        $terjadwal = DB::table('transaksi')
+        ->join('praktik_dijadwalkan', 'praktik_dijadwalkan.idpraktik_dijadwalkan', '=', 'transaksi.praktik_dijadwalkan_idpraktik_dijadwalkan')
+        ->join('pasien', 'pasien.idpasien', '=', 'praktik_dijadwalkan.pasien_idpasien')
+        ->where('praktik_dijadwalkan.status', '1')
+        ->count('transaksi.praktik_dijadwalkan_idpraktik_dijadwalkan');
+
+        $allJadwal = DB::table('transaksi')
+        ->join('praktik_dijadwalkan', 'praktik_dijadwalkan.idpraktik_dijadwalkan', '=', 'transaksi.praktik_dijadwalkan_idpraktik_dijadwalkan')
+        ->join('pasien', 'pasien.idpasien', '=', 'praktik_dijadwalkan.pasien_idpasien')
+        ->count('transaksi.praktik_dijadwalkan_idpraktik_dijadwalkan');
+
+        $pasien = DB::table('pasien')
+        ->count('idpasien');
+
+        $dokter= DB::table('dokter')
+        ->count('iddokter');
+
+        return view('admin/index',['data'=>$data, 'konfirmasi' => $terjadwal, 'nonkonfirmasi'=>$allJadwal, 'pasien' => $pasien, 'dokter'=>$dokter]);
     }
 
     public function allBarang()
