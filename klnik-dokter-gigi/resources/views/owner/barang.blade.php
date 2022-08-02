@@ -1,6 +1,6 @@
 @extends('template.master')
 
-@section('title', 'Kelola Barang')
+@section('title', 'Daftar Barang')
 
 @section('content')
 

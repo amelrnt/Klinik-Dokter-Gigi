@@ -73,10 +73,67 @@ class AdminController extends Controller
 
         $pasien = DB::table('user')
         ->leftJoin('pasien', 'user.iduser','=', 'pasien.user_iduser')
-        ->where('user.level', "dokter")
+        ->where('user.level', "pasien")
         ->get();
 
         return view('admin/assign_user',['dokter'=>$dokter, 'pasien'=>$pasien]);
+    }
+
+    public function accPasien($idUser)
+    {
+        // dd($idUser);
+
+        $pasien = DB::table('pasien')->insert([
+            'user_iduser' => $idUser]);
+
+        if($pasien){
+            Session::flash('message', 'Akun berhasil disetujui!');
+            Session::flash('alert-class', 'alert-success'); 
+        }else{
+            Session::flash('message', 'Jadwal gagal disetujui!');
+            Session::flash('alert-class', 'alert-danger'); 
+        }
+
+        return redirect(route('admin.verif'));
+    }
+
+    public function accDokter($idUser)
+    {
+        // dd($idUser);
+        $dokter = DB::table('dokter')->insert([
+            'user_iduser' => $idUser]);
+
+        if($dokter){
+            Session::flash('message', 'Akun berhasil disetujui!');
+            Session::flash('alert-class', 'alert-success'); 
+        }else{
+            Session::flash('message', 'Jadwal gagal disetujui!');
+            Session::flash('alert-class', 'alert-danger'); 
+        }
+
+        return redirect(route('admin.verif'));
+    }
+
+    public function denyDokter($idUser)
+    {
+        $dokter = DB::table('user')
+        ->where('iduser', $idUser)->delete();
+
+        Session::flash('message', 'akun berhasil ditolak!');
+        Session::flash('alert-class', 'alert-danger'); 
+
+        return redirect(route('admin.verif'));
+    }
+
+    public function denyPasien($idUser)
+    {
+        $pasien = DB::table('user')
+        ->where('iduser', $idUser)->delete();
+
+        Session::flash('message', 'akun berhasil ditolak!');
+        Session::flash('alert-class', 'alert-danger'); 
+        
+        return redirect(route('admin.verif'));
     }
 
 
@@ -91,10 +148,63 @@ class AdminController extends Controller
         ->join('dokter', 'dokter.iddokter', '=', 'praktik_dijadwalkan.dokter_iddokter')
         ->join('user as u1' , 'u1.iduser', '=', 'pasien.user_iduser')
         ->join('user as u2', 'u2.iduser', '=', 'dokter.user_iduser')
-        ->select('praktik_dijadwalkan.tanggal', 'jadwal_praktik.hari', 'jadwal_praktik.jam', 'praktik_dijadwalkan.keterangan', 'praktik_dijadwalkan.status', 'u1.nama_user as namapasien', 'u2.nama_user as namadokter')
+        ->select('praktik_dijadwalkan.idpraktik_dijadwalkan','praktik_dijadwalkan.tanggal', 'jadwal_praktik.hari', 'jadwal_praktik.jam', 'praktik_dijadwalkan.keterangan', 'praktik_dijadwalkan.status', 'u1.nama_user as namapasien', 'u2.nama_user as namadokter')
         ->get();
 
         return view('admin/verif_jadwal',['jadwal'=>$jadwal]);
+    }
+
+    public function terimaJadwal($id){
+        
+        $data = [
+            'praktik_dijadwalkan.status' => '1'
+        ];
+        
+        $jadwal = DB::table('praktik_dijadwalkan')
+        ->join('jadwal_praktik', 'praktik_dijadwalkan.jadwal_praktik_idjadwal_praktik', '=', 'jadwal_praktik.idjadwal_praktik')
+        ->join('pasien', 'praktik_dijadwalkan.pasien_idpasien', '=', 'pasien.idpasien')
+        ->join('dokter', 'dokter.iddokter', '=', 'praktik_dijadwalkan.dokter_iddokter')
+        ->join('user as u1' , 'u1.iduser', '=', 'pasien.user_iduser')
+        ->join('user as u2', 'u2.iduser', '=', 'dokter.user_iduser')
+        ->select('praktik_dijadwalkan.tanggal', 'jadwal_praktik.hari', 'jadwal_praktik.jam', 'praktik_dijadwalkan.keterangan', 'praktik_dijadwalkan.status', 'u1.nama_user as namapasien', 'u2.nama_user as namadokter')
+        ->where('praktik_dijadwalkan.idpraktik_dijadwalkan',$id)
+        ->update($data);
+
+        if($jadwal){
+            Session::flash('message', 'Jadwal berhasil disetujui!');
+            Session::flash('alert-class', 'alert-success'); 
+        }else{
+            Session::flash('message', 'Jadwal gagal disetujui!');
+            Session::flash('alert-class', 'alert-danger'); 
+        }
+        
+        return redirect(route('admin.jadwal'));
+    }
+
+    public function tolakJadwal($id){
+        // $data = [
+        //     'praktik_dijadwalkan.status' => '0'
+        // ];
+        
+        $jadwal = DB::table('praktik_dijadwalkan')
+        ->join('jadwal_praktik', 'praktik_dijadwalkan.jadwal_praktik_idjadwal_praktik', '=', 'jadwal_praktik.idjadwal_praktik')
+        ->join('pasien', 'praktik_dijadwalkan.pasien_idpasien', '=', 'pasien.idpasien')
+        ->join('dokter', 'dokter.iddokter', '=', 'praktik_dijadwalkan.dokter_iddokter')
+        ->join('user as u1' , 'u1.iduser', '=', 'pasien.user_iduser')
+        ->join('user as u2', 'u2.iduser', '=', 'dokter.user_iduser')
+        ->select('praktik_dijadwalkan.tanggal', 'jadwal_praktik.hari', 'jadwal_praktik.jam', 'praktik_dijadwalkan.keterangan', 'praktik_dijadwalkan.status', 'u1.nama_user as namapasien', 'u2.nama_user as namadokter')
+        ->where('praktik_dijadwalkan.idpraktik_dijadwalkan',$id)
+        ->delete();
+
+        if($jadwal){
+            Session::flash('message', 'Jadwal berhasil ditolak!');
+            Session::flash('alert-class', 'alert-success'); 
+        }else{
+            Session::flash('message', 'Jadwal gagal ditolak!');
+            Session::flash('alert-class', 'alert-danger'); 
+        }
+        
+        return redirect(route('admin.jadwal'));
     }
 
  
@@ -157,8 +267,8 @@ class AdminController extends Controller
         ];
 
         $jadwal = DB::table('jadwal_praktik')
-                    ->where('idjadwal_praktik',$idjadwal)
-                    ->update($data);
+                ->where('idjadwal_praktik',$idjadwal)
+                ->update($data);
 
         if($jadwal){
             Session::flash('message', 'Jadwal berhasil diupdate');
@@ -257,6 +367,7 @@ class AdminController extends Controller
         $storetransaksi = DB::table('transaksi')
                         ->insertGetId([
                             'praktik_dijadwalkan_idpraktik_dijadwalkan' => $idjadwal,
+                            'metode_pembayaran' => $request->input('metode_pembayaran'),
                             'total_harga' => $request->input('harga_barang'),
                             'created_at' => now()->format('Y-m-d H:i:s'),
                         ]);
@@ -264,7 +375,7 @@ class AdminController extends Controller
         $storeTransaksiDetail = DB::table('transaksi_detail')
         ->insert([
             'transaksi_idtransaksi' => $storetransaksi,
-            'barang_idbarang' => $request->input('barang'), 
+            'barang_idbarang' => $request->input('barang'),
             'jumlah' => $request->input('jumlah_barang')
         ]);                
 
@@ -272,8 +383,8 @@ class AdminController extends Controller
             Session::flash('message', 'Transaksi berhasil ditambahkan!');
             Session::flash('alert-class', 'alert-success'); 
         } else{
-        Session::flash('message', 'Transaksi gagal ditambahkan!');
-        Session::flash('alert-class', 'alert-danger'); 
+            Session::flash('message', 'Transaksi gagal ditambahkan!');
+            Session::flash('alert-class', 'alert-danger'); 
         }
         
         return redirect(route('admin.transaksi'));

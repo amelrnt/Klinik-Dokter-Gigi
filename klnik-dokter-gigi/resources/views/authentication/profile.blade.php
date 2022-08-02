@@ -15,6 +15,9 @@
                                 <h6 class="m-0 font-weight-bold text-primary">{{strtoupper(Session::get('level'))}}</h6>
                             </div>
                             <div class="card-body my-4">
+                            @if(Session::has('message'))
+                                <p class="alert {{ Session::get('alert-class') }}">{{ Session::get('message') }}</p>
+                            @endif
                                 @if($data != null)
                                 <div class="row">
                                     <div class="col ml-4">

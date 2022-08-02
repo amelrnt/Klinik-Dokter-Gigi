@@ -65,7 +65,7 @@ class PasienController extends Controller
                     ->where('jadwal_praktik.idjadwal_praktik',$id)
                     ->first();
 
-                    return view('pasien/inputcheckup',['jadwal'=>$jadwal]);
+        return view('pasien/inputcheckup',['jadwal'=>$jadwal]);
     }
 
     public function store_jadwal(Request $request){
@@ -79,8 +79,9 @@ class PasienController extends Controller
         $tanggal = date("Y-m-d", $timestamp);
         
         $pasien = DB::table('pasien')->where('user_iduser',Session::get('iduser'))->select('idpasien')->first();
-        
-        $jadwal = DB::table('praktik_dijadwalkan')
+
+        if ($pasien ) {
+            $jadwal = DB::table('praktik_dijadwalkan')
                     ->insert([
                         'tanggal'=> $tanggal,
                         'keterangan' => $request->input('keterangan'),
@@ -90,13 +91,19 @@ class PasienController extends Controller
                         'status' => '0'
                     ]);
         
-        if($jadwal){
-            Session::flash('message', 'Jadwal berhasil ditambah');
-            Session::flash('alert-class', 'alert-success'); 
+            if($jadwal){
+                Session::flash('message', 'Jadwal berhasil ditambah');
+                Session::flash('alert-class', 'alert-success'); 
+            }else{
+                Session::flash('message', 'Jadwal gagal ditambah!');
+                Session::flash('alert-class', 'alert-danger'); 
+            }
         }else{
-            Session::flash('message', 'Jadwal gagal ditambah!');
+            Session::flash('message', 'Pendaftaran anda belum disetujui admin!');
             Session::flash('alert-class', 'alert-danger'); 
         }
+        
+        
 
         return redirect(route('list.jadwal'));
     }

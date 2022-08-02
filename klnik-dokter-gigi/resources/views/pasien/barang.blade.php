@@ -1,6 +1,6 @@
 @extends('template.master')
 
-@section('title', 'Checkup Pasien')
+@section('title', 'Riwayat Barang Pasien')
 
 @section('content')
                 <!-- Begin Page Content -->
@@ -15,6 +15,9 @@
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
+                                @if(Session::has('message'))
+                                    <p class="alert {{ Session::get('alert-class') }}">{{ Session::get('message') }}</p>
+                                @endif
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>

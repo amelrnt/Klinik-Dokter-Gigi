@@ -1,6 +1,6 @@
 @extends('template.master')
 
-@section('title', 'Kelola Barang')
+@section('title', 'Assign User')
 
 @section('content')
 
@@ -16,6 +16,9 @@
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
+                                @if(Session::has('message'))
+                                    <p class="alert {{ Session::get('alert-class') }}">{{ Session::get('message') }}</p>
+                                @endif
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
@@ -36,8 +39,8 @@
                                                     <td>{{$d->email}}</td>
                                                     <td>
                                                     @if(!$d->iddokter)
-                                                    <button type="button" class="btn btn-success">Setujui </button>
-                                                    <button type="button" class="btn btn-danger">Tolak</button>
+                                                    <button onclick="location.href='{{route('admin.acc.dokter',$d->iduser)}}'" type="button" class="btn btn-success">Setujui</button>
+                                                    <button onclick="location.href='{{route('admin.deny.dokter',$d->iduser)}}'" type="button" class="btn btn-danger">Tolak</button>
                                                     @else
                                                     pendaftaran telah disetujui
                                                     @endif
@@ -50,8 +53,8 @@
                                                 <td></td>
                                                 <td></td>
                                                 <td>
-                                                <button type="button" class="btn btn-success">Edit</button>
-                                                <button type="button" class="btn btn-danger">Hapus</button>
+                                                <button type="button" class="btn btn-success">Setujui</button>
+                                                <button type="button" class="btn btn-danger">Tolak</button>
                                                 </td>
                                             </tr>
                                             @endif
@@ -79,32 +82,32 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                        @if($dokter != null)
-                                                @foreach ($pasien as $p)
-                                                <tr>
-                                                    <td>{{$p->nama_user}}</td>
-                                                    <td>{{$p->alamat}}</td>
-                                                    <td>{{$p->noHp}}</td>
-                                                    <td>{{$p->email}}</td>
-                                                    <td>
+                                        @if($pasien != null)
+                                            @foreach ($pasien as $p)
+                                            <tr>
+                                                <td>{{$p->nama_user}}</td>
+                                                <td>{{$p->alamat}}</td>
+                                                <td>{{$p->noHp}}</td>
+                                                <td>{{$p->email}}</td>
+                                                <td>
                                                     @if(!$p->idpasien)
-                                                    <button type="button" class="btn btn-success">Setujui</button>
-                                                    <button type="button" class="btn btn-danger">Tolak</button>
+                                                    <button onclick="location.href='{{route('admin.acc.pasien',$p->iduser)}}'" type="button" class="btn btn-success">Setujui</button>
+                                                    <button onclick="location.href='{{route('admin.deny.pasien',$p->iduser)}}'" type="button" class="btn btn-danger">Tolak</button>
                                                     @else
                                                     pendaftaran telah disetujui
                                                     @endif
-                                                    </td>
-                                                </tr>
-                                                @endforeach
-                                            @else:
-                                            <tr>
-                                                <td>data kosong</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td>
                                                 </td>
                                             </tr>
-                                            @endif
+                                            @endforeach
+                                        @else:
+                                        <tr>
+                                            <td>data kosong</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>
+                                            </td>
+                                        </tr>
+                                        @endif
                                         </tbody>
                                     </table>
                                 </div>

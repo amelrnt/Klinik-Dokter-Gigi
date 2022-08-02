@@ -33,7 +33,6 @@ class LoginController extends Controller
         // $login = Login::where(['username'=>$username,'password'=>$password])->first()->user;
         
         $data = User::where(['username'=>$username,'password'=>$password])->first();
-        var_dump($data);
         if($data != null){
             
             $request->session()->regenerate();

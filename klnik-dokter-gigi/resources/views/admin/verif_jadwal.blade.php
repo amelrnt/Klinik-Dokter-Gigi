@@ -16,6 +16,9 @@
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
+                                @if(Session::has('message'))
+                                    <p class="alert {{ Session::get('alert-class') }}">{{ Session::get('message') }}</p>
+                                @endif
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
@@ -40,8 +43,8 @@
                                                   <td>Disetujui</td>
                                                   @else
                                                     <td>
-                                                    <button type="button" class="btn btn-success">Terima</button>
-                                                    <button type="button" class="btn btn-danger">Tolak</button>
+                                                    <a href="{{route('admin.terima.jadwal', $j->idpraktik_dijadwalkan)}}" class="btn btn-success">Terima</a>
+                                                    <a href="{{route('admin.tolak.jadwal', $j->idpraktik_dijadwalkan)}}" class="btn btn-danger">Tolak</a>
                                                     </td>
                                                   @endif  
                                                 </tr>
@@ -52,8 +55,8 @@
                                                 <td> </td>
                                                 <td> </td>
                                                 <td>
-                                                <button type="button" class="btn btn-success">Edit</button>
-                                                <button type="button" class="btn btn-danger">Hapus</button>
+                                                <!-- <button type="button" class="btn btn-success">Terima</button>
+                                                <button type="button" class="btn btn-danger">Tolak</button> -->
                                                 </td>
                                             </tr>
                                             @endif

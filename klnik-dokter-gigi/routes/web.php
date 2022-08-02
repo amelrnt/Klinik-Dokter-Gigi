@@ -47,6 +47,11 @@ Route::get('/admin/verif_user', [AdminController::class ,'verifUser'])->name('ad
 Route::get('/admin/verif_jadwal', [AdminController::class ,'verifJadwal'])->name('admin.jadwal');
 Route::get('/admin/jadwaldokter', [AdminController::class ,'showJadwal'])->name('admin.jadwaldokter');
 
+Route::get('/admin/verif_pasien/{id}',[AdminController::class ,'accPasien'])->name('admin.acc.pasien');
+Route::get('/admin/verif_dokter/{id}',[AdminController::class ,'accDokter'])->name('admin.acc.dokter');
+Route::get('/admin/tolak_pasien/{id}',[AdminController::class ,'denyPasien'])->name('admin.deny.pasien');
+Route::get('/admin/tolak_dokter/{id}',[AdminController::class ,'denyDokter'])->name('admin.deny.dokter');
+
 Route::get('/admin/transaksi', [AdminController::class ,'showTransaksi'])->name('admin.transaksi');
 Route::get('/admin/inputjadwaltransaksi', [AdminController::class ,'pilihJadwalTransaksi'])->name('admin.tambah.jadwaltransaksi');
 Route::get('/admin/inputtransaksi/{id}', [AdminController::class ,'inputTransaksi'])->name('admin.tambah.transaksi');
@@ -54,8 +59,11 @@ Route::post('/admin/inputtransaksi/{id}', [AdminController::class ,'transaksiToD
 
 Route::get('/admin/inputjadwal', [AdminController::class ,'addNewJadwal'])->name('admin.input.jadwal');
 Route::post('/admin/storejadwal', [AdminController::class ,'storeJadwal'])->name('admin.store.jadwal');
+Route::get('/admin/terimajadwal/{id}', [AdminController::class ,'terimaJadwal'])->name('admin.terima.jadwal');
+Route::get('/admin/tolakjadwal/{id}', [AdminController::class ,'tolakJadwal'])->name('admin.tolak.jadwal');
 Route::put('/admin/updatejadwal/{id}', [AdminController::class ,'updateJadwal'])->name('admin.update.jadwal');
 Route::get('/admin/deletejadwal/{id}', [AdminController::class ,'deleteJadwal'])->name('admin.delete.jadwal');
+
 
 Route::get('/owner', [OwnerController::class ,'index'])->name('owner.index');
 Route::get('/owner/barangowner', [OwnerController::class ,'allBarang'])->name('owner.barang');
