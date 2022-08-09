@@ -1,18 +1,28 @@
 @extends('template.master')
 
-@section('title', 'Daftar Jadwal Pasien')
+@section('title', 'Daftar Jadwal Dokter (Owner)')
 
 @section('content')
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid d-flex flex-column min-vh-100">
 
-                        <!-- Page Heading -->
-                        <h1 class="h3 mb-2 text-gray-800">Tabel</h1>
+                        <form action="{{route('owner.search.jadwaldokter')}}" method="GET">
+                            @method('GET')
+                            <label class="sr-only" for="inlineFormInputGroup">Search</label>
+                            <div class="input-group mb-4 mt-4">
+                                    <input type="text" class="form-control" name="search_jadwal_dokter" id="search_jadwal_dokter" placeholder="Search">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-primary"><i class="fa fa-search"></i> Search</button>
+                                    </div>
+                            </div>
+                        </form>
+
                         <!-- DataTales Example -->
                         <div class="card shadow mb-4">
                             <div class="card-header py-3">
                                 <h6 class="m-0 font-weight-bold text-primary">Daftar Jadwal Dokter</h6>
+                                <a href="{{route('owner.cetak.jadwaldokter')}}" target="_blank" class="btn btn-info"><i class="fas fa-file"></i> Cetak PDF</a>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -28,24 +38,24 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if($jadwal != null)
+                                            @if($jadwal[0]->nama_user != null)
                                                 @foreach ($jadwal as $j)
                                                 <tr>
                                                     <td>{{$j->hari}}</td>
                                                     <td>{{$j->jam}}</td>
                                                     <td>{{$j->nama_user}}</td>
-                                                    <td>
                                                 </tr>
                                                 @endforeach
                                             @else
                                             <tr>
                                                 <td>data kosong</td>
-                                                <td> </td>
-                                                <td> </td>
+                                                <td>data kosong</td>
+                                                <td>data kosong</td>
                                             </tr>
                                             @endif
                                         </tbody>
                                     </table>
+                                    {!!$jadwal->links('pagination::bootstrap-4')!!}
                                 </div>
                             </div>
                         </div>

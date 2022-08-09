@@ -54,9 +54,56 @@ class DokterController extends Controller
                     ->select('praktik_dijadwalkan.tanggal', 'jadwal_praktik.hari', 'jadwal_praktik.jam', 'praktik_dijadwalkan.keterangan', 'user.nama_user')
                     ->where('praktik_dijadwalkan.status','1')
                     ->where('dokter.user_iduser',Session::get('iduser'))
-                    ->get();
+                    ->paginate(15);
         
         return view('dokter/jadwal',['jadwal'=>$jadwal]);
     }
+    public function cetakJadwalPDF(){
+        // SELECT praktik_dijadwalkan.tanggal, jadwal_praktik.hari, jadwal_praktik.jam, praktik_dijadwalkan.keterangan, user.nama_user FROM `praktik_dijadwalkan` 
+        // INNER JOIN jadwal_praktik ON jadwal_praktik.idjadwal_praktik = praktik_dijadwalkan.jadwal_praktik_idjadwal_praktik 
+        // INNER JOIN pasien ON pasien.idpasien = praktik_dijadwalkan.pasien_idpasien
+        // INNER JOIN user ON user.iduser = pasien.user_iduser 
+        // INNER JOIN dokter ON dokter.iddokter = jadwal_praktik.dokter_iddokter 
+        // WHERE praktik_dijadwalkan.status = 1 AND dokter.user_iduser = 2
 
+        $jadwal = DB::table('praktik_dijadwalkan')
+                    ->join('jadwal_praktik', 'jadwal_praktik.idjadwal_praktik', '=', 'praktik_dijadwalkan.jadwal_praktik_idjadwal_praktik')
+                    ->join('pasien', 'praktik_dijadwalkan.pasien_idpasien', '=', 'pasien.idpasien')
+                    ->join('user', 'user.iduser', '=', 'pasien.user_iduser')
+                    ->join('dokter', 'dokter.iddokter', '=', 'jadwal_praktik.dokter_iddokter')
+                    ->select('praktik_dijadwalkan.tanggal', 'jadwal_praktik.hari', 'jadwal_praktik.jam', 'praktik_dijadwalkan.keterangan', 'user.nama_user')
+                    ->where('praktik_dijadwalkan.status','1')
+                    ->where('dokter.user_iduser',Session::get('iduser'))
+                    ->get();
+        
+        $pdf = \PDF::loadview('dokter/cetakjadwalpdf',['jadwal'=>$jadwal]);
+
+        return $pdf->stream();
+    }
+
+    public function searchJadwal(Request $request){
+
+        $search = $request->input('search_jadwal_dokter');
+
+        $jadwal = DB::table('praktik_dijadwalkan')
+                    ->join('jadwal_praktik', 'jadwal_praktik.idjadwal_praktik', '=', 'praktik_dijadwalkan.jadwal_praktik_idjadwal_praktik')
+                    ->join('pasien', 'praktik_dijadwalkan.pasien_idpasien', '=', 'pasien.idpasien')
+                    ->join('user', 'user.iduser', '=', 'pasien.user_iduser')
+                    ->join('dokter', 'dokter.iddokter', '=', 'jadwal_praktik.dokter_iddokter')
+                    ->select('praktik_dijadwalkan.tanggal', 'jadwal_praktik.hari', 'jadwal_praktik.jam', 'praktik_dijadwalkan.keterangan', 'user.nama_user')
+                    ->where('praktik_dijadwalkan.status','1')
+                    ->where('dokter.user_iduser',Session::get('iduser'))
+                    ->where(function($query) use ($search) {
+                        $query->where('praktik_dijadwalkan.tanggal','LIKE','%'.$search.'%')
+                        ->orWhere('praktik_dijadwalkan.keterangan','LIKE','%'.$search.'%')
+                        ->orWhere('jadwal_praktik.hari','LIKE','%'.$search.'%')
+                        ->orWhere('jadwal_praktik.jam','LIKE','%'.$search.'%')
+                        ->orWhere('user.nama_user','LIKE','%'.$search.'%');
+                    })
+                    ->paginate(15);
+        
+        return view('dokter/jadwal',['jadwal'=>$jadwal]);
+
+    }
+    
 }

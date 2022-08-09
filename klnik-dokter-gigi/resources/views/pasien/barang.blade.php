@@ -5,13 +5,11 @@
 @section('content')
                 <!-- Begin Page Content -->
                 <div class="container-fluid d-flex flex-column min-vh-100">
-
-                        <!-- Page Heading -->
-                        <h1 class="h3 mb-2 text-gray-800">Tabel</h1>
                         <!-- DataTales Example -->
                         <div class="card shadow mb-4">
                             <div class="card-header py-3">
                                 <h6 class="m-0 font-weight-bold text-primary">Riwayat Barang Dibeli</h6>
+                                <a href="{{route('pasien.cetak.barang')}}" target="_blank" class="btn btn-info"><i class="fas fa-file"></i> Cetak PDF</a>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -30,28 +28,27 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if($riwayat != null)
+                                            @if($riwayat->count() > 0)
                                                 @foreach ($riwayat as $r)
                                                 <tr>
-                                                    <td>{{$r->tanggal}}</td>
+                                                    <td>{{$r->created_at}}</td>
                                                     <td>{{$r->nama_barang}}</td>
                                                     <td>{{$r->jumlah}}</td>
                                                     <td>{{$r->keterangan}}</td>
                                                     <td>{{$r->dokter}}</td>
-                                                    <td>{{$r->total_harga}}</td>                                                </tr>
+                                                    <td>{{$r->total_harga}}</td>                                                
+                                                </tr>
                                                 @endforeach
-                                            @else:
+                                            @else
                                             <tr>
-                                                <td>11 Januari 2022</td>
-                                                <td>Senin</td>
-                                                <td>10.00</td>
-                                                <td>Johnny</td>
-                                                <td>Hadir</td>
-                                                <td>Aktif</td>
+                                                <td colspan="6">Belum ada transaksi</td>
                                             </tr>
                                             @endif
                                         </tbody>
                                     </table>
+                                    @if($riwayat != null)
+                                        {!!$riwayat->links('pagination::bootstrap-4')!!}
+                                    @endif
                                 </div>
                             </div>
                         </div>

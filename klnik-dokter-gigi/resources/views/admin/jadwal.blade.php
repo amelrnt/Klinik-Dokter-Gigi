@@ -6,14 +6,24 @@
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid d-flex flex-column min-vh-100">
-
-                        <!-- Page Heading -->
-                        <h1 class="h3 mb-2 text-gray-800">Tabel</h1>
+                    
+                    <form action="{{route('admin.search.jadwaldokter')}}" method="GET">
+                        @method('GET')
+                        <label class="sr-only" for="inlineFormInputGroup">Search</label>
+                        <div class="input-group mb-4 mt-4">
+                                <input type="text" class="form-control" name="search_jadwal_dokter" id="search_jadwal_dokter" placeholder="Search">
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-primary"><i class="fa fa-search"></i> Search</button>
+                                </div>
+                        </div>
+                    </form>
+                    
                         <!-- DataTales Example -->
                         <div class="card shadow mb-4">
                             <div class="card-header py-3">
                                 <h6 class="m-0 font-weight-bold text-primary">Daftar Jadwal Dokter</h6>
-                              <a href="{{route('admin.input.jadwal')}}" class="btn btn-primary">Tambah Data</a>
+                                <a href="{{route('admin.input.jadwal')}}" class="btn btn-primary">Tambah Data</a>
+                                <a href="{{route('admin.cetak.jadwaldokter')}}" target="_blank" class="btn btn-info"><i class="fas fa-file"></i> Cetak PDF</a>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -30,7 +40,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if($jadwal != null)
+                                            @if($jadwal[0]->nama_user != null)
                                                 @foreach ($jadwal as $j)
                                                 <tr>
                                                     <td>{{$j->hari}}</td>
@@ -38,7 +48,6 @@
                                                     <td>{{$j->nama_user}}</td>
                                                     <td>
                                                     <a href="#" data-toggle="modal" data-target="#editModal-{{$j->idjadwal_praktik}}" class="btn btn-success">Edit</a>
-                                                    <a href="{{route('admin.delete.jadwal',$j->idjadwal_praktik)}}" class="btn btn-danger">Hapus</a>
                                                     </td>
                                                 </tr>
                                                 <!-- Edit Modal-->
@@ -80,7 +89,7 @@
                                                                                     <select class="form-control" name="jam_{{$j->idjadwal_praktik}}" id="jam" aria-describedby="jamHelp">
                                                                                         @if($hours != null)
                                                                                             @foreach($hours as $h)
-                                                                                                @if($h == $time[0])
+                                                                                                @if($time[0]==$h)
                                                                                                     <option value="{{$h}}" selected>{{$h}}</option>
                                                                                                 @else
                                                                                                     <option value="{{$h}}">{{$h}}</option>
@@ -94,7 +103,7 @@
                                                                                     <select class="form-control" name="menit_{{$j->idjadwal_praktik}}" id="menit" aria-describedby="menitHelp">
                                                                                         @if($minutes != null)
                                                                                             @foreach($minutes as $m)
-                                                                                            @if($m == $time[0])
+                                                                                            @if($time[1]==$m)
                                                                                                 <option value="{{$m}}" selected>{{$m}}</option>
                                                                                             @else
                                                                                                 <option value="{{$m}}">{{$m}}</option>
@@ -140,6 +149,9 @@
                                             @endif
                                         </tbody>
                                     </table>
+                                    @if($jadwal != null)
+                                    {!!$jadwal->links('pagination::bootstrap-4')!!}
+                                    @endif
                                 </div>
                             </div>
                         </div>

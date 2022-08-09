@@ -1,18 +1,26 @@
 @extends('template.master')
 
-@section('title', 'Assign User')
+@section('title', 'Setujui Pengguna')
 
 @section('content')
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid d-flex flex-column min-vh-100">
-
-                        <!-- Page Heading -->
-                        <h1 class="h3 mb-2 text-gray-800">Tabel</h1>
+                    <form action="{{route('admin.search.akundokter')}}" method="GET">
+                        @method('GET')
+                        <label class="sr-only" for="inlineFormInputGroup">Search</label>
+                        <div class="input-group mb-4">
+                                <input type="text" class="form-control" name="search_akun_dokter" id="search_akun_dokter" placeholder="Search Akun Dokter">
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-primary"><i class="fa fa-search"></i> Search</button>
+                                </div>
+                        </div>
+                    </form>
                         <!-- DataTales Example -->
                         <div class="card shadow mb-4">
                             <div class="card-header py-3">
                                 <h6 class="m-0 font-weight-bold text-primary">Daftar akun Dokter</h6>
+                                <a href="{{route('admin.cetak.akundokter')}}" target="_blank" class="btn btn-info"><i class="fas fa-file"></i> Cetak PDF</a>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -60,14 +68,28 @@
                                             @endif
                                         </tbody>
                                     </table>
+                                    {!!$dokter->links('pagination::bootstrap-4')!!}
                                 </div>
                             </div>
                         </div>
+
+                        
+                    <form action="{{route('admin.search.akunpasien')}}" method="GET">
+                        @method('GET')
+                        <label class="sr-only" for="inlineFormInputGroup">Search</label>
+                        <div class="input-group mb-4">
+                                <input type="text" class="form-control" name="search_akun_pasien" id="search_akun_pasien" placeholder="Search Akun Pasien">
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-primary"><i class="fa fa-search"></i> Search</button>
+                                </div>
+                        </div>
+                    </form>
                         
                         <!-- DataTales Example -->
                         <div class="card shadow mb-4">
                             <div class="card-header py-3">
                                 <h6 class="m-0 font-weight-bold text-primary">Daftar akun Pasien</h6>
+                                <a href="{{route('admin.cetak.akunpasien')}}" target="_blank" class="btn btn-info"><i class="fas fa-file"></i> Cetak PDF</a>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -110,6 +132,7 @@
                                         @endif
                                         </tbody>
                                     </table>
+                                    {!!$pasien->links('pagination::bootstrap-4')!!}
                                 </div>
                             </div>
                         </div>

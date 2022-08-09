@@ -5,13 +5,11 @@
 @section('content')
                 <!-- Begin Page Content -->
                 <div class="container-fluid d-flex flex-column min-vh-100">
-
-                        <!-- Page Heading -->
-                        <h1 class="h3 mb-2 text-gray-800">Tabel</h1>
                         <!-- DataTales Example -->
                         <div class="card shadow mb-4">
                             <div class="card-header py-3">
                                 <h6 class="m-0 font-weight-bold text-primary">Riwayat Checkup</h6>
+                                <a href="{{route('pasien.cetak.riwayat')}}" target="_blank" class="btn btn-info"><i class="fas fa-file"></i> Cetak PDF</a>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -47,12 +45,7 @@
                                                 @endforeach
                                             @else:
                                             <tr>
-                                                <td>11 Januari 2022</td>
-                                                <td>Senin</td>
-                                                <td>10.00</td>
-                                                <td>Johnny</td>
-                                                <td>Hadir</td>
-                                                <td>Aktif</td>
+                                                <td colspan="6">Belum ada riwayat checkup</td>
                                             </tr>
                                             @endif
                                         </tbody>

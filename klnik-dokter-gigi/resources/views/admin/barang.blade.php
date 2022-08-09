@@ -7,13 +7,24 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid d-flex flex-column min-vh-100">
 
-                        <!-- Page Heading -->
-                        <h1 class="h3 mb-2 text-gray-800">Tabel</h1>
+                    <div class="col-auto">
+                        
+                        <form action="{{route('admin.search.barang')}}" method="GET">
+                            @method('GET')
+                            <label class="sr-only" for="inlineFormInputGroup">Search</label>
+                            <div class="input-group mb-4 mt-4">
+                                    <input type="text" class="form-control" name="search_barang" id="search_barang" placeholder="Search">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-primary"><i class="fa fa-search"></i> Search</button>
+                                    </div>
+                            </div>
+                        </form>
                         <!-- DataTales Example -->
                         <div class="card shadow mb-4">
                             <div class="card-header py-3">
                                 <h6 class="m-0 font-weight-bold text-primary">Daftar Barang</h6>
                                 <a href="{{route('admin.tambah.barang')}}" class="btn btn-primary">Tambah Data</a>
+                                <a href="{{route('admin.cetak.barang')}}" target="_blank" class="btn btn-info"><i class="fas fa-file"></i> Cetak PDF</a>
                             </div>
 
                             <div class="card-body">
@@ -31,7 +42,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if($barang != null)
+                                            @if($barang[0]->idbarang != null)
                                                 @foreach ($barang as $b)
                                                 <tr>
                                                     <td>{{$b->nama_barang}}</td>
@@ -39,7 +50,7 @@
                                                     <td>{{$b->stok_barang}}</td>
                                                     <td>
                                                     <a href="#" data-toggle="modal" data-target="#editModal-{{$b->idbarang}}" class="btn btn-success">Edit</a>
-                                                    <a href="#" data-toggle="modal" data-target="#deleteModal-{{$b->idbarang}}" class="btn btn-danger">Hapus</a>
+                                                    {{-- <a href="#" data-toggle="modal" data-target="#deleteModal-{{$b->idbarang}}" class="btn btn-danger">Hapus</a> --}}
                                                     </td>
                                                 </tr>
                                                 <!-- Edit Modal-->
@@ -107,13 +118,13 @@
                                                 <td> </td>
                                                 <td>
                                                 <a href="#" class="btn btn-success">Edit</a>
-                                                <a href="#"
-                                                 class="btn btn-danger">Hapus</a>
+                                                <a href="#" class="btn btn-danger">Hapus</a>
                                                 </td>
                                             </tr>
                                             @endif
                                         </tbody>
                                     </table>
+                                    {!!$barang->links('pagination::bootstrap-4')!!}
                                 </div>
                             </div>
                         </div>

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Session;
 use App\Models\Barang;
 use stdClass;
 use Illuminate\Support\Collection;
+use \PDF;
 
 class AdminController extends Controller
 {
@@ -17,16 +18,25 @@ class AdminController extends Controller
     {
         $data = User::where(['iduser'=>Session::get('iduser')])->first();
 
-        $terjadwal = DB::table('transaksi')
-        ->join('praktik_dijadwalkan', 'praktik_dijadwalkan.idpraktik_dijadwalkan', '=', 'transaksi.praktik_dijadwalkan_idpraktik_dijadwalkan')
-        ->join('pasien', 'pasien.idpasien', '=', 'praktik_dijadwalkan.pasien_idpasien')
-        ->where('praktik_dijadwalkan.status', '1')
-        ->count('transaksi.praktik_dijadwalkan_idpraktik_dijadwalkan');
+        $terjadwal = DB::table('praktik_dijadwalkan')
+        // ->join('jadwal_praktik', 'jadwal_praktik.idjadwal_praktik', '=', 'praktik_dijadwalkan.jadwal_praktik_idjadwal_praktik')
+        // ->join('pasien', 'pasien.idpasien', '=', 'praktik_dijadwalkan.pasien_idpasien')
+        // ->join('dokter', 'dokter.iddokter', '=', 'jadwal_praktik.dokter_iddokter')
+        // ->join('user as u1' , 'u1.iduser', '=', 'pasien.user_iduser')
+        // ->join('user as u2', 'u2.iduser', '=', 'dokter.user_iduser')
+        // ->select('praktik_dijadwalkan.idpraktik_dijadwalkan','praktik_dijadwalkan.tanggal', 'jadwal_praktik.hari', 'jadwal_praktik.jam', 'praktik_dijadwalkan.keterangan', 'praktik_dijadwalkan.status', 'u1.nama_user as namapasien', 'u2.nama_user as namadokter')
+        ->where('praktik_dijadwalkan.status','1')
+        ->count('praktik_dijadwalkan.idpraktik_dijadwalkan');
 
-        $allJadwal = DB::table('transaksi')
-        ->join('praktik_dijadwalkan', 'praktik_dijadwalkan.idpraktik_dijadwalkan', '=', 'transaksi.praktik_dijadwalkan_idpraktik_dijadwalkan')
-        ->join('pasien', 'pasien.idpasien', '=', 'praktik_dijadwalkan.pasien_idpasien')
-        ->count('transaksi.praktik_dijadwalkan_idpraktik_dijadwalkan');
+        $allJadwal = DB::table('praktik_dijadwalkan')
+        // ->join('jadwal_praktik', 'jadwal_praktik.idjadwal_praktik', '=', 'praktik_dijadwalkan.jadwal_praktik_idjadwal_praktik')
+        // ->join('pasien', 'pasien.idpasien', '=', 'praktik_dijadwalkan.pasien_idpasien')
+        // ->join('dokter', 'dokter.iddokter', '=', 'jadwal_praktik.dokter_iddokter')
+        // ->join('user as u1' , 'u1.iduser', '=', 'pasien.user_iduser')
+        // ->join('user as u2', 'u2.iduser', '=', 'dokter.user_iduser')
+        // ->select('praktik_dijadwalkan.idpraktik_dijadwalkan','praktik_dijadwalkan.tanggal', 'jadwal_praktik.hari', 'jadwal_praktik.jam', 'praktik_dijadwalkan.keterangan', 'praktik_dijadwalkan.status', 'u1.nama_user as namapasien', 'u2.nama_user as namadokter')
+        ->where('praktik_dijadwalkan.status','0')
+        ->count('praktik_dijadwalkan.idpraktik_dijadwalkan');
 
         $pasien = DB::table('pasien')
         ->count('idpasien');
@@ -40,7 +50,7 @@ class AdminController extends Controller
     public function allBarang()
     {
         $data = DB::table('barang')
-        ->get();
+        ->paginate(6);
 
         return view('admin/barang',['barang'=>$data]);
     }
@@ -71,7 +81,6 @@ class AdminController extends Controller
 
         $add_barang = DB::table('barang')->insert($data);
         
-
         if($add_barang){
             Session::flash('message', 'Barang berhasil ditambah');
             Session::flash('alert-class', 'alert-success'); 
@@ -82,24 +91,123 @@ class AdminController extends Controller
         return redirect(route('admin.barang'));
     }
 
+    public function searchBarang(Request $request){
+
+        $barang = $request->input('search_barang');
+
+        $data = DB::table('barang')
+        ->select('*')
+        ->where('nama_barang','LIKe','%'.$barang.'%')
+        ->orWhere('harga_barang','LIKE','%'.$barang.'%')
+        ->orWhere('stok_barang','LIKE','%'.$barang.'%')
+        ->get();
+
+        return view('admin/barang',['barang'=>$data]);
+
+    }
+
+    public function cetakBarangPDF(){
+        $data = DB::table('barang')
+        ->get();
+
+        $pdf = \PDF::loadview('admin/cetakbarangpdf',['barang'=>$data]);
+
+        return $pdf->stream();
+    }
+
     public function verifUser()
     {
         $dokter = DB::table('user')
         ->leftJoin('dokter', 'user.iduser','=', 'dokter.user_iduser')
         ->where('user.level', "dokter")
-        ->get();
+        ->paginate(10);
+
+        $pasien = DB::table('user')
+        ->leftJoin('pasien', 'user.iduser','=', 'pasien.user_iduser')
+        ->where('user.level', "pasien")
+        ->paginate(10);
+
+        return view('admin/assign_user',['dokter'=>$dokter, 'pasien'=>$pasien]);
+    }
+    public function cetakAkunPasienPDF()
+    {
 
         $pasien = DB::table('user')
         ->leftJoin('pasien', 'user.iduser','=', 'pasien.user_iduser')
         ->where('user.level', "pasien")
         ->get();
 
+        
+        $pdf = \PDF::loadview('admin/cetakakunpasienpdf',['pasien'=>$pasien]);
+
+        return $pdf->stream();
+    }
+    public function cetakAkunDokterPDF()
+    {
+
+        $dokter = DB::table('user')
+        ->leftJoin('dokter', 'user.iduser','=', 'dokter.user_iduser')
+        ->where('user.level', "dokter")
+        ->get();
+
+        $pdf = \PDF::loadview('admin/cetakakundokterpdf',['dokter'=>$dokter]);
+
+        return $pdf->stream();
+    }
+
+    public function searchAkunDokter(Request $request){
+
+        $akunDokter = $request->input('search_akun_dokter');
+
+        $dokter = DB::table('user')
+        ->leftJoin('dokter', 'user.iduser','=', 'dokter.user_iduser')
+        ->select('user.*','dokter.*')
+        ->where('user.level', "dokter")
+        ->where(function($query) use ($akunDokter){
+            $query->where('user.nama_user','LIKE','%'.$akunDokter.'%')
+            ->orWhere('user.alamat','LIKE','%'.$akunDokter.'%')
+            ->orWhere('user.noHp','LIKE','%'.$akunDokter.'%')
+            ->orWhere('user.email','LIKE','%'.$akunDokter.'%');
+        })
+        ->paginate(15);
+        
+
+        $pasien = DB::table('user')
+        ->leftJoin('pasien', 'user.iduser','=', 'pasien.user_iduser')
+        ->where('user.level', "pasien")
+        ->paginate(15);
+
+        return view('admin/assign_user',['dokter'=>$dokter, 'pasien'=>$pasien]);
+    }
+
+    public function searchAkunPasien(Request $request){
+
+        $akunPasien = $request->input('search_akun_pasien');
+
+        $dokter = DB::table('user')
+        ->leftJoin('dokter', 'user.iduser','=', 'dokter.user_iduser')
+        ->where('user.level', "dokter")
+        ->paginate(15);
+        
+
+        $pasien = DB::table('user')
+        ->leftJoin('pasien', 'user.iduser','=', 'pasien.user_iduser')
+        ->select('user.*','pasien.*')
+        ->where('user.level', "pasien")
+        
+        ->where(function($query) use ($akunPasien){
+            $query->where('user.nama_user','LIKE','%'.$akunPasien.'%')
+            ->orWhere('user.alamat','LIKE','%'.$akunPasien.'%')
+            ->orWhere('user.noHp','LIKE','%'.$akunPasien.'%')
+            ->orWhere('user.email','LIKE','%'.$akunPasien.'%');
+        })
+        ->paginate(15);
+
         return view('admin/assign_user',['dokter'=>$dokter, 'pasien'=>$pasien]);
     }
 
     public function accPasien($idUser)
     {
-        // dd($idUser);
 
         $pasien = DB::table('pasien')->insert([
             'user_iduser' => $idUser]);
@@ -117,7 +225,7 @@ class AdminController extends Controller
 
     public function accDokter($idUser)
     {
-        // dd($idUser);
+        
         $dokter = DB::table('dokter')->insert([
             'user_iduser' => $idUser]);
 
@@ -159,14 +267,51 @@ class AdminController extends Controller
     {
         // SELECT praktik_dijadwalkan.tanggal, jadwal_praktik.hari, jadwal_praktik.jam, praktik_dijadwalkan.keterangan, praktik_dijadwalkan.status, u1.nama_user as namapasien, u2.nama_user as namadokter 
         // FROM praktik_dijadwalkan INNER JOIN jadwal_praktik ON praktik_dijadwalkan.jadwal_praktik_idjadwal_praktik = jadwal_praktik.idjadwal_praktik INNER JOIN pasien ON praktik_dijadwalkan.pasien_idpasien = pasien.idpasien 
-        // INNER JOIN dokter ON dokter.iddokter = praktik_dijadwalkan.dokter_iddokter INNER JOIN user as u1 on u1.iduser = pasien.user_iduser INNER JOIN user as u2 on u2.iduser= dokter.user_iduser
+        // INNER JOIN dokter ON dokter.iddokter = jadwal_praktik.dokter_iddokter INNER JOIN user as u1 on u1.iduser = pasien.user_iduser INNER JOIN user as u2 on u2.iduser= dokter.user_iduser
         $jadwal = DB::table('praktik_dijadwalkan')
         ->join('jadwal_praktik', 'praktik_dijadwalkan.jadwal_praktik_idjadwal_praktik', '=', 'jadwal_praktik.idjadwal_praktik')
         ->join('pasien', 'praktik_dijadwalkan.pasien_idpasien', '=', 'pasien.idpasien')
-        ->join('dokter', 'dokter.iddokter', '=', 'praktik_dijadwalkan.dokter_iddokter')
+        ->join('dokter', 'dokter.iddokter', '=', 'jadwal_praktik.dokter_iddokter')
         ->join('user as u1' , 'u1.iduser', '=', 'pasien.user_iduser')
         ->join('user as u2', 'u2.iduser', '=', 'dokter.user_iduser')
         ->select('praktik_dijadwalkan.idpraktik_dijadwalkan','praktik_dijadwalkan.tanggal', 'jadwal_praktik.hari', 'jadwal_praktik.jam', 'praktik_dijadwalkan.keterangan', 'praktik_dijadwalkan.status', 'u1.nama_user as namapasien', 'u2.nama_user as namadokter')
+        ->paginate(15);
+
+        return view('admin/verif_jadwal',['jadwal'=>$jadwal]);
+    }
+
+    public function cetakVerifJadwalPDF(){
+        $jadwal = DB::table('praktik_dijadwalkan')
+        ->join('jadwal_praktik', 'praktik_dijadwalkan.jadwal_praktik_idjadwal_praktik', '=', 'jadwal_praktik.idjadwal_praktik')
+        ->join('pasien', 'praktik_dijadwalkan.pasien_idpasien', '=', 'pasien.idpasien')
+        ->join('dokter', 'dokter.iddokter', '=', 'jadwal_praktik.dokter_iddokter')
+        ->join('user as u1' , 'u1.iduser', '=', 'pasien.user_iduser')
+        ->join('user as u2', 'u2.iduser', '=', 'dokter.user_iduser')
+        ->select('praktik_dijadwalkan.idpraktik_dijadwalkan','praktik_dijadwalkan.tanggal', 'jadwal_praktik.hari', 'jadwal_praktik.jam', 'praktik_dijadwalkan.keterangan', 'praktik_dijadwalkan.status', 'u1.nama_user as namapasien', 'u2.nama_user as namadokter')
+        ->get();
+
+        $pdf = \PDF::loadview('admin/cetakverifjadwalpdf',['jadwal'=>$jadwal]);
+
+        return $pdf->stream();
+    }
+
+    public function searchVerifJadwal(Request $request){
+        
+        $searchVerif = $request->input('search_jadwal_verif');
+
+        $jadwal = DB::table('praktik_dijadwalkan')
+        ->join('jadwal_praktik', 'jadwal_praktik.idjadwal_praktik', '=', 'praktik_dijadwalkan.jadwal_praktik_idjadwal_praktik')
+        ->join('pasien', 'pasien.idpasien', '=', 'praktik_dijadwalkan.pasien_idpasien')
+        ->join('dokter', 'dokter.iddokter', '=', 'jadwal_praktik.dokter_iddokter')
+        ->join('user as u1' , 'u1.iduser', '=', 'pasien.user_iduser')
+        ->join('user as u2', 'u2.iduser', '=', 'dokter.user_iduser')
+        ->select('praktik_dijadwalkan.idpraktik_dijadwalkan','praktik_dijadwalkan.tanggal', 'jadwal_praktik.hari', 'jadwal_praktik.jam', 'praktik_dijadwalkan.keterangan', 'praktik_dijadwalkan.status', 'u1.nama_user as namapasien', 'u2.nama_user as namadokter')
+        ->where('praktik_dijadwalkan.tanggal','LIKE','%'.$searchVerif.'%')
+        ->orWhere('jadwal_praktik.hari','LIKE','%'.$searchVerif.'%')
+        ->orWhere('jadwal_praktik.jam','LIKE','%'.$searchVerif.'%')
+        ->orWhere('praktik_dijadwalkan.keterangan','LIKE','%'.$searchVerif.'%')
+        ->orWhere('u1.nama_user','LIKE','%'.$searchVerif.'%')
+        ->orWhere('u2.nama_user','LIKE','%'.$searchVerif.'%')
         ->get();
 
         return view('admin/verif_jadwal',['jadwal'=>$jadwal]);
@@ -179,9 +324,9 @@ class AdminController extends Controller
         ];
         
         $jadwal = DB::table('praktik_dijadwalkan')
-        ->join('jadwal_praktik', 'praktik_dijadwalkan.jadwal_praktik_idjadwal_praktik', '=', 'jadwal_praktik.idjadwal_praktik')
-        ->join('pasien', 'praktik_dijadwalkan.pasien_idpasien', '=', 'pasien.idpasien')
-        ->join('dokter', 'dokter.iddokter', '=', 'praktik_dijadwalkan.dokter_iddokter')
+        ->join('jadwal_praktik', 'jadwal_praktik.idjadwal_praktik', '=', 'praktik_dijadwalkan.jadwal_praktik_idjadwal_praktik')
+        ->join('pasien', 'pasien.idpasien', '=', 'praktik_dijadwalkan.pasien_idpasien')
+        ->join('dokter', 'dokter.iddokter', '=', 'jadwal_praktik.dokter_iddokter')
         ->join('user as u1' , 'u1.iduser', '=', 'pasien.user_iduser')
         ->join('user as u2', 'u2.iduser', '=', 'dokter.user_iduser')
         ->select('praktik_dijadwalkan.tanggal', 'jadwal_praktik.hari', 'jadwal_praktik.jam', 'praktik_dijadwalkan.keterangan', 'praktik_dijadwalkan.status', 'u1.nama_user as namapasien', 'u2.nama_user as namadokter')
@@ -200,18 +345,15 @@ class AdminController extends Controller
     }
 
     public function tolakJadwal($id){
-        // $data = [
-        //     'praktik_dijadwalkan.status' => '0'
-        // ];
         
         $jadwal = DB::table('praktik_dijadwalkan')
-        ->join('jadwal_praktik', 'praktik_dijadwalkan.jadwal_praktik_idjadwal_praktik', '=', 'jadwal_praktik.idjadwal_praktik')
-        ->join('pasien', 'praktik_dijadwalkan.pasien_idpasien', '=', 'pasien.idpasien')
-        ->join('dokter', 'dokter.iddokter', '=', 'praktik_dijadwalkan.dokter_iddokter')
+        ->join('jadwal_praktik', 'jadwal_praktik.idjadwal_praktik', '=', 'praktik_dijadwalkan.jadwal_praktik_idjadwal_praktik')
+        ->join('pasien', 'pasien.idpasien', '=', 'praktik_dijadwalkan.pasien_idpasien')
+        ->join('dokter', 'dokter.iddokter', '=', 'jadwal_praktik.dokter_iddokter')
         ->join('user as u1' , 'u1.iduser', '=', 'pasien.user_iduser')
         ->join('user as u2', 'u2.iduser', '=', 'dokter.user_iduser')
         ->select('praktik_dijadwalkan.tanggal', 'jadwal_praktik.hari', 'jadwal_praktik.jam', 'praktik_dijadwalkan.keterangan', 'praktik_dijadwalkan.status', 'u1.nama_user as namapasien', 'u2.nama_user as namadokter')
-        ->where('praktik_dijadwalkan.idpraktik_dijadwalkan',$id)
+        ->where('praktik_dijadwalkan.idpraktik_dijadwalkan', $id)
         ->delete();
 
         if($jadwal){
@@ -225,7 +367,6 @@ class AdminController extends Controller
         return redirect(route('admin.jadwal'));
     }
 
- 
     public function showJadwal()
     {
         // SELECT jadwal_praktik.hari, jadwal_praktik.jam, user.nama_user FROM `jadwal_praktik` 
@@ -234,7 +375,38 @@ class AdminController extends Controller
         ->join('dokter', 'jadwal_praktik.dokter_iddokter', '=', 'dokter.iddokter')
         ->join('user', 'user.iduser', '=', 'dokter.user_iduser')
         ->select('jadwal_praktik.*', 'user.nama_user')
-        ->get();
+        ->paginate(15);
+
+        // $time = explode(':',$jadwal[0]->jam);
+        // var_dump($time);
+        // die();
+
+        $dokter = DB::table('dokter')
+                    ->join('user','dokter.user_iduser','=','user.iduser')
+                    ->select('*')
+                    ->get();
+        
+        $hours = new Collection(['8','9','10','11','12','13','14','15','16','17','18','19']);
+        $minutes = new Collection(['00','15','30','45']);
+        $days = new Collection(['senin','selasa','rabu','kamis','jumat','sabtu','minggu']);
+
+        // var_dump("Jadwal", $jadwal, "Dokter", $dokter, $hours, $minutes);
+
+        return view('admin/jadwal',['jadwal'=>$jadwal,'dokter'=>$dokter,'hours'=>$hours,'minutes'=>$minutes,'days'=>$days]);
+    }
+
+    public function searchJadwalDokter(Request $request){
+
+        $search = $request->input('search_jadwal_dokter');
+
+        $jadwal = DB::table('jadwal_praktik')
+        ->join('dokter', 'jadwal_praktik.dokter_iddokter', '=', 'dokter.iddokter')
+        ->join('user', 'user.iduser', '=', 'dokter.user_iduser')
+        ->select('jadwal_praktik.*', 'user.nama_user')
+        ->where('jadwal_praktik.hari','LIKE','%'.$search.'%')
+        ->orWhere('jadwal_praktik.jam','LIKE','%'.$search.'%')
+        ->orWhere('user.nama_user','LIKE','%'.$search.'%')
+        ->paginate(15);
 
         $dokter = DB::table('dokter')
                     ->join('user','dokter.user_iduser','=','user.iduser')
@@ -243,11 +415,23 @@ class AdminController extends Controller
         
         $hours = new Collection(['9','10','11','12','13','14','15','16','17','18','19']);
         $minutes = new Collection(['00','15','30','45']);
-        $days = new Collection(['Senin','Selasa','Rabu','Kamis','Jumat']);
+        $days = new Collection(['senin','selasa','rabu','kamis','jumat','sabtu','minggu']);
 
         // var_dump("Jadwal", $jadwal, "Dokter", $dokter, $hours, $minutes);
 
         return view('admin/jadwal',['jadwal'=>$jadwal,'dokter'=>$dokter,'hours'=>$hours,'minutes'=>$minutes,'days'=>$days]);
+    }
+
+    public function cetakJadwalDokterPDF(){
+        $jadwal = DB::table('jadwal_praktik')
+        ->join('dokter', 'jadwal_praktik.dokter_iddokter', '=', 'dokter.iddokter')
+        ->join('user', 'user.iduser', '=', 'dokter.user_iduser')
+        ->select('jadwal_praktik.*', 'user.nama_user')
+        ->get();
+
+        $pdf = \PDF::loadview('admin/cetakjadwalpdf',['jadwal'=>$jadwal]);
+
+        return $pdf->stream();
     }
 
     public function addNewJadwal(){
@@ -331,7 +515,91 @@ class AdminController extends Controller
         ->join('user', 'pasien.user_iduser', '=', 'user.iduser')
         ->select('user.nama_user', DB::raw('group_concat(barang.nama_barang) as nama_barang'), 'transaksi_detail.jumlah', 'transaksi.metode_pembayaran', 'transaksi.total_harga', 'transaksi.created_at')
         ->groupBy('transaksi.idtransaksi')
+        ->paginate(15);
+
+        return view('admin/transaksi',['transaksi'=>$transaksi]);
+    }
+    public function searchTransaksiByMonth(Request $request){
+
+        $month = $request->input('filter_month');
+
+        $query = DB::table('transaksi_detail')
+        ->join('transaksi', 'transaksi_detail.transaksi_idtransaksi', '=', 'transaksi.idtransaksi')
+        ->join('praktik_dijadwalkan', 'praktik_dijadwalkan.idpraktik_dijadwalkan', '=', 'transaksi.praktik_dijadwalkan_idpraktik_dijadwalkan')
+        ->join('barang', 'transaksi_detail.barang_idbarang', '=', 'barang.idbarang')
+        ->join('pasien', 'praktik_dijadwalkan.pasien_idpasien', '=', 'pasien.idpasien')
+        ->join('user', 'pasien.user_iduser', '=', 'user.iduser')
+        ->select('user.nama_user', DB::raw('group_concat(barang.nama_barang) as nama_barang'), 'transaksi_detail.jumlah', 'transaksi.metode_pembayaran', 'transaksi.total_harga', 'transaksi.created_at');
+
+        if($month == '0'){
+            $transaksi = $query->groupBy('transaksi.idtransaksi')
+            ->paginate(15);
+        }else{
+            $transaksi = $query->whereMonth('transaksi.created_at','=',$month)
+            ->groupBy('transaksi.idtransaksi')
+            ->paginate(15);
+        }
+        return view('admin/transaksi',['transaksi'=>$transaksi]);
+    }
+
+
+
+    public function cetakTransaksiPDF(){
+        
+        $transaksi = DB::table('transaksi_detail')
+        ->join('transaksi', 'transaksi_detail.transaksi_idtransaksi', '=', 'transaksi.idtransaksi')
+        ->join('praktik_dijadwalkan', 'praktik_dijadwalkan.idpraktik_dijadwalkan', '=', 'transaksi.praktik_dijadwalkan_idpraktik_dijadwalkan')
+        ->join('barang', 'transaksi_detail.barang_idbarang', '=', 'barang.idbarang')
+        ->join('pasien', 'praktik_dijadwalkan.pasien_idpasien', '=', 'pasien.idpasien')
+        ->join('user', 'pasien.user_iduser', '=', 'user.iduser')
+        ->select('user.nama_user', DB::raw('group_concat(barang.nama_barang) as nama_barang'), 'transaksi_detail.jumlah', 'transaksi.metode_pembayaran', 'transaksi.total_harga', 'transaksi.created_at')
+        ->groupBy('transaksi.idtransaksi')
         ->get();
+
+        $pdf = \PDF::loadview('admin/cetaktransaksipdf',['transaksi'=>$transaksi, 'month'=>'0']);
+
+        return $pdf->stream();
+    }
+    public function cetakTransaksiByMonthPDF($month){
+        
+        $query = DB::table('transaksi_detail')
+        ->join('transaksi', 'transaksi_detail.transaksi_idtransaksi', '=', 'transaksi.idtransaksi')
+        ->join('praktik_dijadwalkan', 'praktik_dijadwalkan.idpraktik_dijadwalkan', '=', 'transaksi.praktik_dijadwalkan_idpraktik_dijadwalkan')
+        ->join('barang', 'transaksi_detail.barang_idbarang', '=', 'barang.idbarang')
+        ->join('pasien', 'praktik_dijadwalkan.pasien_idpasien', '=', 'pasien.idpasien')
+        ->join('user', 'pasien.user_iduser', '=', 'user.iduser')
+        ->select('user.nama_user', DB::raw('group_concat(barang.nama_barang) as nama_barang'), 'transaksi_detail.jumlah', 'transaksi.metode_pembayaran', 'transaksi.total_harga', 'transaksi.created_at');
+
+        if($month == '0'){
+            $transaksi = $query->groupBy('transaksi.idtransaksi')
+            ->get();
+        }else{
+            $transaksi = $query->whereMonth('transaksi.created_at','=',$month)
+            ->groupBy('transaksi.idtransaksi')
+            ->get();
+        }
+        $pdf = \PDF::loadview('admin/cetaktransaksipdf',['transaksi'=>$transaksi, 'month'=>$month]);
+        return $pdf->stream();
+    }
+    public function searchTransaksi(Request $request){
+        
+        $searchTransaksi = $request->input('search_transaksi');
+        
+        $transaksi = DB::table('transaksi_detail')
+        ->join('transaksi', 'transaksi_detail.transaksi_idtransaksi', '=', 'transaksi.idtransaksi')
+        ->join('praktik_dijadwalkan', 'praktik_dijadwalkan.idpraktik_dijadwalkan', '=', 'transaksi.praktik_dijadwalkan_idpraktik_dijadwalkan')
+        ->join('barang', 'transaksi_detail.barang_idbarang', '=', 'barang.idbarang')
+        ->join('pasien', 'praktik_dijadwalkan.pasien_idpasien', '=', 'pasien.idpasien')
+        ->join('user', 'pasien.user_iduser', '=', 'user.iduser')
+        ->select('user.nama_user', DB::raw('group_concat(barang.nama_barang) as nama_barang'), 'transaksi_detail.jumlah', 'transaksi.metode_pembayaran', 'transaksi.total_harga', 'transaksi.created_at')
+        ->groupBy('transaksi.idtransaksi')
+        ->where('user.nama_user','LIKE','%'.$searchTransaksi.'%')
+        ->orWhere('barang.nama_barang','LIKE','%'.$searchTransaksi.'%')
+        ->orWhere('transaksi_detail.jumlah','LIKE','%'.$searchTransaksi.'%')
+        ->orWhere('transaksi.metode_pembayaran','LIKE','%'.$searchTransaksi.'%')
+        ->orWhere('transaksi.total_harga','LIKE','%'.$searchTransaksi.'%')
+        ->orWhere('transaksi.created_at','LIKE','%'.$searchTransaksi.'%')
+        ->paginate(15);
 
         return view('admin/transaksi',['transaksi'=>$transaksi]);
     }
@@ -342,7 +610,7 @@ class AdminController extends Controller
         ->rightJoin('praktik_dijadwalkan', 'transaksi.praktik_dijadwalkan_idpraktik_dijadwalkan','=', 'praktik_dijadwalkan.idpraktik_dijadwalkan')
         ->join('jadwal_praktik', 'praktik_dijadwalkan.jadwal_praktik_idjadwal_praktik', '=', 'jadwal_praktik.idjadwal_praktik')
         ->join('pasien', 'praktik_dijadwalkan.pasien_idpasien', '=', 'pasien.idpasien')
-        ->join('dokter', 'dokter.iddokter', '=', 'praktik_dijadwalkan.dokter_iddokter')
+        ->join('dokter', 'dokter.iddokter', '=', 'jadwal_praktik.dokter_iddokter')
         ->join('user as u1' , 'u1.iduser', '=', 'pasien.user_iduser')
         ->join('user as u2', 'u2.iduser', '=', 'dokter.user_iduser')
         ->select('praktik_dijadwalkan.idpraktik_dijadwalkan','praktik_dijadwalkan.tanggal', 'jadwal_praktik.hari', 'jadwal_praktik.jam', 'praktik_dijadwalkan.keterangan', 'praktik_dijadwalkan.status', 'u1.nama_user as namapasien', 'u2.nama_user as namadokter')
@@ -372,16 +640,9 @@ class AdminController extends Controller
 
     public function transaksiToDB(Request $request,$idjadwal)
     {
-        // $data = [
-        //     'id_jadwal' => $idjadwal,
-        //     'metode_pembayaran' => $request->input('metode_pembayaran'),
-        //     'id_barang' => $request->input('barang'), 
-        //     'total_harga' => $request->input('harga_barang'),
-        //     'jumlah_barang' => $request->input('jumlah_barang')
-        // ];
-
-        // dd($data);
-
+        // set timezone to GMT+7 ("Asia/Bangkok")
+        date_default_timezone_set("Asia/Bangkok");
+        
         $storetransaksi = DB::table('transaksi')
                         ->insertGetId([
                             'praktik_dijadwalkan_idpraktik_dijadwalkan' => $idjadwal,

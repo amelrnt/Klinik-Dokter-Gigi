@@ -53,7 +53,35 @@ class PasienController extends Controller
                     ->join('dokter', 'jadwal_praktik.dokter_iddokter', '=', 'dokter.iddokter')
                     ->join('user', 'dokter.user_iduser', '=', 'user.iduser')
                     ->select('jadwal_praktik.idjadwal_praktik','jadwal_praktik.hari', 'jadwal_praktik.jam', 'user.nama_user','user.iduser')
+                    ->paginate(15);
+                    // ->get();
+
+        return view('pasien/jadwalcheckup',['jadwal'=>$jadwal]);
+    }
+
+    public function cetakJadwalPDF(){
+        $jadwal = DB::table('jadwal_praktik')
+                    ->join('dokter', 'jadwal_praktik.dokter_iddokter', '=', 'dokter.iddokter')
+                    ->join('user', 'dokter.user_iduser', '=', 'user.iduser')
+                    ->select('jadwal_praktik.idjadwal_praktik','jadwal_praktik.hari', 'jadwal_praktik.jam', 'user.nama_user','user.iduser')
                     ->get();
+
+        $pdf = \PDF::loadview('pasien/cetakjadwaldokterpdf',['jadwal'=>$jadwal]);
+        return $pdf->stream();
+    }
+    public function searchJadwal(Request $request)
+    {
+
+        $search = $request->input('search_jadwal_dokter');
+
+        $jadwal = DB::table('jadwal_praktik')
+                    ->join('dokter', 'jadwal_praktik.dokter_iddokter', '=', 'dokter.iddokter')
+                    ->join('user', 'dokter.user_iduser', '=', 'user.iduser')
+                    ->select('jadwal_praktik.idjadwal_praktik','jadwal_praktik.hari', 'jadwal_praktik.jam', 'user.nama_user','user.iduser')
+                    ->where('jadwal_praktik.hari', 'LIKE','%'.$search.'%')
+                    ->orWhere('jadwal_praktik.jam', 'LIKE','%'.$search.'%')
+                    ->orWhere('user.nama_user', 'LIKE','%'.$search.'%')
+                    ->paginate(15);
 
         return view('pasien/jadwalcheckup',['jadwal'=>$jadwal]);
     }
@@ -87,7 +115,6 @@ class PasienController extends Controller
                         'keterangan' => $request->input('keterangan'),
                         'jadwal_praktik_idjadwal_praktik'=> $request->input('idjadwal_praktik'),
                         'pasien_idpasien'=> $pasien->idpasien,
-                        'dokter_iddokter'=> $request->input('id_dokter'),
                         'status' => '0'
                     ]);
         
@@ -122,17 +149,41 @@ class PasienController extends Controller
         $riwayat = DB::table('transaksi')
         ->join('transaksi_detail', 'transaksi.idtransaksi', '=', 'transaksi_detail.transaksi_idtransaksi')
         ->join('praktik_dijadwalkan', 'praktik_dijadwalkan.idpraktik_dijadwalkan', '=', 'transaksi.praktik_dijadwalkan_idpraktik_dijadwalkan')
+        ->join('jadwal_praktik', 'praktik_dijadwalkan.jadwal_praktik_idjadwal_praktik', '=', 'jadwal_praktik.idjadwal_praktik')
+        ->join('dokter', 'jadwal_praktik.dokter_iddokter', '=', 'dokter.iddokter')
         ->join('barang', 'barang.idbarang', '=', 'transaksi_detail.barang_idbarang')
-        ->join('dokter', 'dokter.iddokter', '=', 'praktik_dijadwalkan.dokter_iddokter')
         ->join('user AS u1', 'dokter.user_iduser', '=', 'u1.iduser')
         ->join('pasien', 'praktik_dijadwalkan.pasien_idpasien', '=', 'pasien.idpasien')
         ->join('user AS u2', 'u2.iduser', '=', 'pasien.user_iduser')
-        ->select('transaksi.total_harga','transaksi.metode_pembayaran', 'transaksi.metode_pembayaran', 'barang.nama_barang', 'transaksi_detail.jumlah', 'praktik_dijadwalkan.tanggal', 'praktik_dijadwalkan.keterangan', 'u1.nama_user AS dokter')
+        ->select('u2.iduser','transaksi.total_harga', 'transaksi.metode_pembayaran', DB::raw('group_concat(barang.nama_barang) as nama_barang'), 'transaksi_detail.jumlah', 'transaksi.created_at', 'praktik_dijadwalkan.keterangan', 'u1.nama_user AS dokter')
         ->where('praktik_dijadwalkan.status', '1')
         ->where('u2.iduser', Session::get('iduser'))
-        ->get();
+        ->paginate(15);
+
+        // var_dump($riwayat[0]);
 
         return view('pasien/barang',['riwayat'=>$riwayat]);
+    }
+
+    public function cetakRiwayatBarangPDF(){
+        
+        $riwayat = DB::table('transaksi')
+            ->join('transaksi_detail', 'transaksi.idtransaksi', '=', 'transaksi_detail.transaksi_idtransaksi')
+            ->join('praktik_dijadwalkan', 'praktik_dijadwalkan.idpraktik_dijadwalkan', '=', 'transaksi.praktik_dijadwalkan_idpraktik_dijadwalkan')
+            ->join('jadwal_praktik', 'praktik_dijadwalkan.jadwal_praktik_idjadwal_praktik', '=', 'jadwal_praktik.idjadwal_praktik')
+            ->join('dokter', 'jadwal_praktik.dokter_iddokter', '=', 'dokter.iddokter')
+            ->join('barang', 'barang.idbarang', '=', 'transaksi_detail.barang_idbarang')
+            ->join('user AS u1', 'dokter.user_iduser', '=', 'u1.iduser')
+            ->join('pasien', 'praktik_dijadwalkan.pasien_idpasien', '=', 'pasien.idpasien')
+            ->join('user AS u2', 'u2.iduser', '=', 'pasien.user_iduser')
+            ->select('u2.iduser','transaksi.total_harga', 'transaksi.metode_pembayaran', DB::raw('group_concat(barang.nama_barang) as nama_barang'), 'transaksi_detail.jumlah', 'transaksi.created_at', 'praktik_dijadwalkan.keterangan', 'u1.nama_user AS dokter')
+            ->where('praktik_dijadwalkan.status', '1')
+            ->where('u2.iduser', Session::get('iduser'))
+            ->get();
+        
+        $pdf = \PDF::loadview('pasien/cetakriwayatbarangpdf',['riwayat'=>$riwayat]);
+
+        return $pdf->stream();
     }
 
     public function daftar_checkup($jadwal){
@@ -166,7 +217,7 @@ class PasienController extends Controller
                                 'keterangan' => 'check up '.(count($check_riwayat)+1),
                                 'jadwal_praktik_idjadwal_praktik'=> $jadwal,
                                 'pasien_idpasien'=> $pasien->idpasien,
-                                'dokter_iddokter'=> $jadwal_praktik->dokter_iddokter,
+                                // 'dokter_iddokter'=> $jadwal_praktik->dokter_iddokter,
                                 'status' => '0'
                             ]);
         if($request_jadwal){
@@ -174,5 +225,20 @@ class PasienController extends Controller
         }else{
             return redirect('list.jadwal');
         }
+    }
+    public function cetakRiwayatPDF(){
+        
+        $riwayat = DB::table('jadwal_praktik')
+                    ->join('dokter', 'jadwal_praktik.dokter_iddokter', '=', 'dokter.iddokter')
+                    ->join('user', 'dokter.user_iduser', '=', 'user.iduser')
+                    ->join('praktik_dijadwalkan as pd','pd.jadwal_praktik_idjadwal_praktik','=','jadwal_praktik.idjadwal_praktik')
+                    ->join('pasien','pasien.idpasien','=','pd.pasien_idpasien')
+                    ->select('jadwal_praktik.*', 'user.*', 'pd.tanggal','pd.keterangan','pd.status')
+                    ->where('pasien.user_iduser',Session::get('iduser'))
+                    ->get();
+
+        $pdf = \PDF::loadview('pasien/cetakriwayatpdf',['riwayat'=>$riwayat]);
+
+        return $pdf->stream();
     }
 }
