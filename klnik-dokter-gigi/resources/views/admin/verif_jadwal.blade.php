@@ -81,6 +81,7 @@
                                                     @else
                                                         <td>
                                                             <a href="{{route('admin.terima.jadwal', $j->idpraktik_dijadwalkan)}}" class="btn btn-success">Terima</a>
+                                                            <a href="{{route('admin.tolak.jadwal', $j->idpraktik_dijadwalkan)}}" class="btn btn-danger">Tolak</a>
                                                         </td>
                                                     @endif  
                                                 </tr>

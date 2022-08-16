@@ -345,7 +345,7 @@ class AdminController extends Controller
         ->orWhere('praktik_dijadwalkan.keterangan','LIKE','%'.$searchVerif.'%')
         ->orWhere('u1.nama_user','LIKE','%'.$searchVerif.'%')
         ->orWhere('u2.nama_user','LIKE','%'.$searchVerif.'%')
-        ->get();
+        ->paginate(15);
 
         return view('admin/verif_jadwal',['jadwal'=>$jadwal]);
     }
