@@ -63,7 +63,7 @@ class OwnerController extends Controller
         ->where('nama_barang','LIKe','%'.$barang.'%')
         ->orWhere('harga_barang','LIKE','%'.$barang.'%')
         ->orWhere('stok_barang','LIKE','%'.$barang.'%')
-        ->get();
+        ->paginate(15);
 
         return view('owner/barang',['barang'=>$data]);
 
