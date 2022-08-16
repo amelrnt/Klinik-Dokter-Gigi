@@ -78,7 +78,9 @@
                                             @endif
                                         </tbody>
                                     </table>
+                                    @if($transaksi->count() > 0)
                                     {!!$transaksi->links('pagination::bootstrap-4')!!}
+                                    @endif
                                 </div>
                             </div>
                         </div>

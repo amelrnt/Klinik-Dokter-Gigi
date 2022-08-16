@@ -70,7 +70,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if($transaksi != null)
+                                            @if($transaksi->count() > 0)
                                                 @foreach ($transaksi as $t)
                                                 <tr>
                                                     <td>{{$t->nama_user}}</td>
@@ -83,18 +83,12 @@
                                                 @endforeach
                                             @else
                                             <tr>
-                                                <td>data kosong</td>
-                                                <td> </td>
-                                                <td> </td>
-                                                <td>
-                                                <button type="button" class="btn btn-success">Edit</button>
-                                                <button type="button" class="btn btn-danger">Hapus</button>
-                                                </td>
+                                                <td colspan="5">Belum ada data</td>
                                             </tr>
                                             @endif
                                         </tbody>
                                     </table>
-                                    @if($transaksi != null)
+                                    @if($transaksi->count() > 0)
                                         {!! $transaksi->links('pagination::bootstrap-4') !!}
                                     @endif
                                 </div>

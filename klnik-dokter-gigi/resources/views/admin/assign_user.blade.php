@@ -38,7 +38,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if($dokter != null)
+                                            @if($dokter->count() > 0)
                                                 @foreach ($dokter as $d)
                                                 <tr>
                                                     <td>{{$d->nama_user}}</td>
@@ -57,18 +57,14 @@
                                                 @endforeach
                                             @else
                                             <tr>
-                                                <td>data kosong</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td>
-                                                <button type="button" class="btn btn-success">Setujui</button>
-                                                <button type="button" class="btn btn-danger">Tolak</button>
-                                                </td>
+                                                <td colspan="5">Belum ada data</td>
                                             </tr>
                                             @endif
                                         </tbody>
                                     </table>
-                                    {!!$dokter->links('pagination::bootstrap-4')!!}
+                                    @if($dokter->count() > 0)
+                                        {!!$dokter->links('pagination::bootstrap-4')!!}
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -104,7 +100,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                        @if($pasien != null)
+                                        @if($pasien->count() > 0)
                                             @foreach ($pasien as $p)
                                             <tr>
                                                 <td>{{$p->nama_user}}</td>
@@ -121,18 +117,16 @@
                                                 </td>
                                             </tr>
                                             @endforeach
-                                        @else:
+                                        @else
                                         <tr>
-                                            <td>data kosong</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td>
-                                            </td>
+                                            <td colspan="5">Belum ada data</td>
                                         </tr>
                                         @endif
                                         </tbody>
                                     </table>
-                                    {!!$pasien->links('pagination::bootstrap-4')!!}
+                                    @if($pasien->count() > 0)
+                                        {!!$pasien->links('pagination::bootstrap-4')!!}
+                                    @endif
                                 </div>
                             </div>
                         </div>

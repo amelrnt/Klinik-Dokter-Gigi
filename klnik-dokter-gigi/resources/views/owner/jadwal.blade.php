@@ -38,7 +38,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if($jadwal[0]->nama_user != null)
+                                            @if($jadwal->count() > 0)
                                                 @foreach ($jadwal as $j)
                                                 <tr>
                                                     <td>{{$j->hari}}</td>
@@ -48,14 +48,14 @@
                                                 @endforeach
                                             @else
                                             <tr>
-                                                <td>data kosong</td>
-                                                <td>data kosong</td>
-                                                <td>data kosong</td>
+                                                <td colspan="3">Belum ada data</td>
                                             </tr>
                                             @endif
                                         </tbody>
                                     </table>
-                                    {!!$jadwal->links('pagination::bootstrap-4')!!}
+                                    @if($jadwal->count() > 0)
+                                        {!!$jadwal->links('pagination::bootstrap-4')!!}
+                                    @endif
                                 </div>
                             </div>
                         </div>

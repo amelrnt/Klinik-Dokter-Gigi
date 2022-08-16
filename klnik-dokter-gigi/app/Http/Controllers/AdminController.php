@@ -280,6 +280,23 @@ class AdminController extends Controller
         return view('admin/verif_jadwal',['jadwal'=>$jadwal]);
     }
 
+    public function searchVerifJadwalByMonth(Request $request){
+
+        $month = $request->input('filter_month');
+
+        $jadwal = DB::table('praktik_dijadwalkan')
+        ->join('jadwal_praktik', 'praktik_dijadwalkan.jadwal_praktik_idjadwal_praktik', '=', 'jadwal_praktik.idjadwal_praktik')
+        ->join('pasien', 'praktik_dijadwalkan.pasien_idpasien', '=', 'pasien.idpasien')
+        ->join('dokter', 'dokter.iddokter', '=', 'jadwal_praktik.dokter_iddokter')
+        ->join('user as u1' , 'u1.iduser', '=', 'pasien.user_iduser')
+        ->join('user as u2', 'u2.iduser', '=', 'dokter.user_iduser')
+        ->select('praktik_dijadwalkan.idpraktik_dijadwalkan','praktik_dijadwalkan.tanggal', 'jadwal_praktik.hari', 'jadwal_praktik.jam', 'praktik_dijadwalkan.keterangan', 'praktik_dijadwalkan.status', 'u1.nama_user as namapasien', 'u2.nama_user as namadokter')
+        ->whereMonth('praktik_dijadwalkan.tanggal','=',$month)
+        ->paginate(15);
+
+        return view('admin/verif_jadwal',['jadwal'=>$jadwal]);
+    }
+
     public function cetakVerifJadwalPDF(){
         $jadwal = DB::table('praktik_dijadwalkan')
         ->join('jadwal_praktik', 'praktik_dijadwalkan.jadwal_praktik_idjadwal_praktik', '=', 'jadwal_praktik.idjadwal_praktik')
@@ -290,7 +307,23 @@ class AdminController extends Controller
         ->select('praktik_dijadwalkan.idpraktik_dijadwalkan','praktik_dijadwalkan.tanggal', 'jadwal_praktik.hari', 'jadwal_praktik.jam', 'praktik_dijadwalkan.keterangan', 'praktik_dijadwalkan.status', 'u1.nama_user as namapasien', 'u2.nama_user as namadokter')
         ->get();
 
-        $pdf = \PDF::loadview('admin/cetakverifjadwalpdf',['jadwal'=>$jadwal]);
+        $pdf = \PDF::loadview('admin/cetakverifjadwalpdf',['jadwal'=>$jadwal,'month'=>'0']);
+
+        return $pdf->stream();
+    }
+
+    public function cetakVerifJadwalPDFByMonth($month){
+        $jadwal = DB::table('praktik_dijadwalkan')
+        ->join('jadwal_praktik', 'praktik_dijadwalkan.jadwal_praktik_idjadwal_praktik', '=', 'jadwal_praktik.idjadwal_praktik')
+        ->join('pasien', 'praktik_dijadwalkan.pasien_idpasien', '=', 'pasien.idpasien')
+        ->join('dokter', 'dokter.iddokter', '=', 'jadwal_praktik.dokter_iddokter')
+        ->join('user as u1' , 'u1.iduser', '=', 'pasien.user_iduser')
+        ->join('user as u2', 'u2.iduser', '=', 'dokter.user_iduser')
+        ->select('praktik_dijadwalkan.idpraktik_dijadwalkan','praktik_dijadwalkan.tanggal', 'jadwal_praktik.hari', 'jadwal_praktik.jam', 'praktik_dijadwalkan.keterangan', 'praktik_dijadwalkan.status', 'u1.nama_user as namapasien', 'u2.nama_user as namadokter')
+        ->whereMonth('praktik_dijadwalkan.tanggal','=',$month)
+        ->get();
+
+        $pdf = \PDF::loadview('admin/cetakverifjadwalpdf',['jadwal'=>$jadwal,'month'=>$month]);
 
         return $pdf->stream();
     }

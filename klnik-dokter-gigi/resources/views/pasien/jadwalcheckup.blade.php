@@ -21,7 +21,11 @@
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
                             <h6 class="m-0 font-weight-bold text-primary">Jadwal Checkup</h6>
+                            @if(Request::input('filter_month') == null)
                             <a href="{{route('pasien.cetak.jadwal')}}" target="_blank" class="btn btn-info"><i class="fas fa-file"></i> Cetak PDF</a>
+                            @else
+                            <a href="{{route('pasien.cetak.jadwalcheckupbymonth',Request::input('filter_month'))}}" target="_blank" class="btn btn-info"><i class="fas fa-file"></i> Cetak PDF</a>
+                            @endif
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -56,13 +60,9 @@
                                         @endif
                                     </tbody>
                                 </table>
-                                
-                                <div class="d-flex justify-content-center">
-                                    @if($jadwal[0]->nama_user != null)
-                                        {!!$jadwal->links('pagination::bootstrap-4')!!}
-                                    @endif
-                                </div>
-                                
+                                @if($jadwal->count() > 0)
+                                    {!!$jadwal->links('pagination::bootstrap-4')!!}
+                                @endif
                             </div>
                         </div>
                     </div>

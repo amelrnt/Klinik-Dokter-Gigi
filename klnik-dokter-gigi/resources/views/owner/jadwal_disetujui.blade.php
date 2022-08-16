@@ -85,7 +85,9 @@
                                             @endif
                                         </tbody>
                                     </table>
+                                    @if($jadwal->count() > 0)
                                     {!!$jadwal->links('pagination::bootstrap-4')!!}
+                                    @endif
                                 </div>
                             </div>
                         </div>

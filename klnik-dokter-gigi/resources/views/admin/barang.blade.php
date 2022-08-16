@@ -42,7 +42,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if($barang[0]->idbarang != null)
+                                            @if($barang->count() > 0)
                                                 @foreach ($barang as $b)
                                                 <tr>
                                                     <td>{{$b->nama_barang}}</td>
@@ -113,18 +113,14 @@
                                                 @endforeach
                                             @else
                                             <tr>
-                                                <td>data kosong</td>
-                                                <td> </td>
-                                                <td> </td>
-                                                <td>
-                                                <a href="#" class="btn btn-success">Edit</a>
-                                                <a href="#" class="btn btn-danger">Hapus</a>
-                                                </td>
+                                                <td colspan="4">Belum ada data</td>
                                             </tr>
                                             @endif
                                         </tbody>
                                     </table>
-                                    {!!$barang->links('pagination::bootstrap-4')!!}
+                                    @if($barang->count() > 0)
+                                        {!!$barang->links('pagination::bootstrap-4')!!}
+                                    @endif
                                 </div>
                             </div>
                         </div>

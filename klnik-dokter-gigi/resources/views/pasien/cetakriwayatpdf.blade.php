@@ -20,6 +20,35 @@
 
                         <!-- Page Heading -->
                         <h1 class="h3 mb-2 text-gray-800">Laporan Riwayat Checkup PDF (Pasien)</h1>
+                        @if($month == '0')
+                            <h6>Seluruh bulan</h6>
+                        @else
+                            @if($month == '1')
+                                <h6>Bulan : Januari</h6>
+                            @elseif($month == '2')
+                                <h6>Bulan : Februari</h6>
+                            @elseif($month == '3')
+                                <h6>Bulan : Maret</h6>
+                            @elseif($month == '4')
+                                <h6>Bulan : April</h6>
+                            @elseif($month == '5')
+                                <h6>Bulan : Mei</h6>
+                            @elseif($month == '6')
+                                <h6>Bulan : Juni</h6>
+                            @elseif($month == '7')
+                                <h6>Bulan : Juli</h6>
+                            @elseif($month == '8')
+                                <h6>Bulan : Agustus</h6>
+                            @elseif($month == '9')
+                                <h6>Bulan : September</h6>
+                            @elseif($month == '10')
+                                <h6>Bulan : Oktober</h6>
+                            @elseif($month == '11')
+                                <h6>Bulan : November</h6>
+                            @elseif($month == '12')
+                                <h6>Bulan : Desember</h6>
+                            @endif
+                        @endif
                         <!-- DataTables Example -->
                         <div class="card shadow mb-4">
                             <div class="card-header py-3">

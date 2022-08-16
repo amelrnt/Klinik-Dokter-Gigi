@@ -57,7 +57,9 @@ Route::get('/logout', [LoginController::class , 'logout'])->name('logout');
 
     Route::get('/admin/verif_jadwal', [AdminController::class ,'verifJadwal'])->name('admin.jadwal');
     Route::get('/admin/cetak/verif_jadwal', [AdminController::class ,'cetakVerifJadwalPDF'])->name('admin.cetak.jadwalverif');
+    Route::get('/admin/cetak/verif_jadwal/{month}', [AdminController::class ,'cetakVerifJadwalPDFByMonth'])->name('admin.cetak.jadwalverifbymonth');
     Route::get('/admin/search/verif_jadwal', [AdminController::class ,'searchVerifJadwal'])->name('admin.search.jadwalverif');
+    Route::get('/admin/filter/verif_jadwal', [AdminController::class ,'searchVerifJadwalByMonth'])->name('admin.filter.jadwalverif');
 
     Route::get('/admin/jadwaldokter', [AdminController::class ,'showJadwal'])->name('admin.jadwaldokter');
     Route::get('/admin/cetakjadwaldokter', [AdminController::class ,'cetakJadwalDokterPDF'])->name('admin.cetak.jadwaldokter');
@@ -109,10 +111,14 @@ Route::get('/logout', [LoginController::class , 'logout'])->name('logout');
 
     Route::get('/pasien', [PasienController::class ,'index'])->name('pasien.index');
     Route::get('/pasien/riwayat', [PasienController::class ,'riwayat'])->name('list.riwayat');
+    Route::get('/pasien/filter/riwayat', [PasienController::class ,'searchRiwayatCheckupByMonth'])->name('pasien.filter.riwayat');
     Route::get('/pasien/cetakriwayattransaksi', [PasienController::class ,'cetakRiwayatPDF'])->name('pasien.cetak.riwayat');
+    Route::get('/pasien/cetakriwayattransaksi/{month}', [PasienController::class ,'cetakRiwayatPDFByMonth'])->name('pasien.cetak.riwayatbymonth');
 
     Route::get('/pasien/barang', [PasienController::class ,'barang'])->name('list.barang');
+    Route::get('/pasien/filter/barang', [PasienController::class ,'searchRiwayatBarangByMonth'])->name('pasien.filter.barangbymonth');
     Route::get('/pasien/cetakriwayatbarang', [PasienController::class ,'cetakRiwayatBarangPDF'])->name('pasien.cetak.barang');
+    Route::get('/pasien/cetakriwayatbarang/{month}', [PasienController::class ,'cetakRiwayatBarangPDFByMonth'])->name('pasien.cetak.barangbymonth');
 
     Route::get('/pasien/jadwal', [PasienController::class ,'jadwal'])->name('list.jadwal');
     Route::get('/pasien/cetakjadwal', [PasienController::class ,'cetakJadwalPDF'])->name('pasien.cetak.jadwal');
@@ -126,5 +132,7 @@ Route::get('/logout', [LoginController::class , 'logout'])->name('logout');
     Route::get('/dokter', [DokterController::class ,'index'])->name('dokter.index');
     Route::get('/dokter/jadwal', [DokterController::class ,'jadwal'])->name('dokter.jadwal');
     Route::get('/dokter/search/jadwal', [DokterController::class ,'searchJadwal'])->name('dokter.search.jadwal');
+    Route::get('/dokter/filter/jadwal', [DokterController::class ,'filterJadwalByMonth'])->name('dokter.filter.jadwalbymonth');
     Route::get('/dokter/cetak/jadwal', [DokterController::class ,'cetakJadwalPDF'])->name('dokter.cetak.jadwal');
+    Route::get('/dokter/cetak/jadwal/{month}', [DokterController::class ,'cetakJadwalPDFByMonth'])->name('dokter.cetak.jadwalbymonth');
 // });

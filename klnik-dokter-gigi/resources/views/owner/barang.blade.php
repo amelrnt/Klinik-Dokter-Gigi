@@ -52,7 +52,9 @@
                                             @endif
                                         </tbody>
                                     </table>
+                                    @if($barang->count() > 0)
                                     {!!$barang->links('pagination::bootstrap-4')!!}
+                                    @endif
                                 </div>
                             </div>
                         </div>
