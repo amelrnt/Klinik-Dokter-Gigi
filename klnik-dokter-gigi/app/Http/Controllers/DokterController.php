@@ -63,16 +63,21 @@ class DokterController extends Controller
 
         $month = $request->input('filter_month');
         
-        $jadwal = DB::table('praktik_dijadwalkan')
+        $query = DB::table('praktik_dijadwalkan')
         ->join('jadwal_praktik', 'jadwal_praktik.idjadwal_praktik', '=', 'praktik_dijadwalkan.jadwal_praktik_idjadwal_praktik')
         ->join('pasien', 'praktik_dijadwalkan.pasien_idpasien', '=', 'pasien.idpasien')
         ->join('user', 'user.iduser', '=', 'pasien.user_iduser')
         ->join('dokter', 'dokter.iddokter', '=', 'jadwal_praktik.dokter_iddokter')
         ->select('praktik_dijadwalkan.tanggal', 'jadwal_praktik.hari', 'jadwal_praktik.jam', 'praktik_dijadwalkan.keterangan', 'user.nama_user')
         ->where('praktik_dijadwalkan.status','1')
-        ->where('dokter.user_iduser',Session::get('iduser'))
-        ->whereMonth('praktik_dijadwalkan.tanggal','=',$month)
-        ->paginate(15);
+        ->where('dokter.user_iduser',Session::get('iduser'));
+
+        if($month == '0'){
+            $jadwal = $query->whereMonth('praktik_dijadwalkan.tanggal','=',$month)
+            ->paginate(15);
+        }else{
+            $jadwal = $query->paginate(15);
+        }
 
         return view('dokter/jadwal',['jadwal'=>$jadwal]);
     }
@@ -107,16 +112,21 @@ class DokterController extends Controller
         // INNER JOIN dokter ON dokter.iddokter = jadwal_praktik.dokter_iddokter 
         // WHERE praktik_dijadwalkan.status = 1 AND dokter.user_iduser = 2
 
-        $jadwal = DB::table('praktik_dijadwalkan')
-                    ->join('jadwal_praktik', 'jadwal_praktik.idjadwal_praktik', '=', 'praktik_dijadwalkan.jadwal_praktik_idjadwal_praktik')
-                    ->join('pasien', 'praktik_dijadwalkan.pasien_idpasien', '=', 'pasien.idpasien')
-                    ->join('user', 'user.iduser', '=', 'pasien.user_iduser')
-                    ->join('dokter', 'dokter.iddokter', '=', 'jadwal_praktik.dokter_iddokter')
-                    ->select('praktik_dijadwalkan.tanggal', 'jadwal_praktik.hari', 'jadwal_praktik.jam', 'praktik_dijadwalkan.keterangan', 'user.nama_user')
-                    ->where('praktik_dijadwalkan.status','1')
-                    ->where('dokter.user_iduser',Session::get('iduser'))
-                    ->whereMonth('praktik_dijadwalkan.tanggal','=',$month)
-                    ->get();
+        $query = DB::table('praktik_dijadwalkan')
+        ->join('jadwal_praktik', 'jadwal_praktik.idjadwal_praktik', '=', 'praktik_dijadwalkan.jadwal_praktik_idjadwal_praktik')
+        ->join('pasien', 'praktik_dijadwalkan.pasien_idpasien', '=', 'pasien.idpasien')
+        ->join('user', 'user.iduser', '=', 'pasien.user_iduser')
+        ->join('dokter', 'dokter.iddokter', '=', 'jadwal_praktik.dokter_iddokter')
+        ->select('praktik_dijadwalkan.tanggal', 'jadwal_praktik.hari', 'jadwal_praktik.jam', 'praktik_dijadwalkan.keterangan', 'user.nama_user')
+        ->where('praktik_dijadwalkan.status','1')
+        ->where('dokter.user_iduser',Session::get('iduser'));
+
+        if($month == '0'){
+            $jadwal = $query->whereMonth('praktik_dijadwalkan.tanggal','=',$month)
+            ->get();
+        }else{
+            $jadwal = $query->get();
+        }
         
         $pdf = \PDF::loadview('dokter/cetakjadwalpdf',['jadwal'=>$jadwal,'month'=>$month]);
 

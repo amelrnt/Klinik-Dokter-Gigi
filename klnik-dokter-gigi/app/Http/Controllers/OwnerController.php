@@ -81,8 +81,21 @@ class OwnerController extends Controller
 
         return view('owner/jadwal',['jadwal'=>$jadwal]);
     }
+    public function searchJadwalDokter(Request $request){
+        
+        $search = $request->input('search_jadwal_dokter');
 
-    
+        $jadwal = DB::table('jadwal_praktik')
+        ->join('dokter', 'jadwal_praktik.dokter_iddokter', '=', 'dokter.iddokter')
+        ->join('user', 'user.iduser', '=', 'dokter.user_iduser')
+        ->select('jadwal_praktik.*', 'user.nama_user')
+        ->where('jadwal_praktik.hari','LIKE','%'.$search.'%')
+        ->orWhere('jadwal_praktik.jam','LIKE','%'.$search.'%')
+        ->orWhere('user.nama_user','LIKE','%'.$search.'%')
+        ->paginate(15);
+
+        return view('owner/jadwal',['jadwal'=>$jadwal]);
+    }
 
     public function cetakJadwalDokterPDF()
     {
@@ -120,7 +133,7 @@ class OwnerController extends Controller
             ->orWhere('jadwal_praktik.jam','LIKE','%'.$search.'%')
             ->orWhere('jadwal_praktik.hari','LIKE','%'.$search.'%');
         })
-        ->get();
+        ->paginate(15);
 
         return view('owner/jadwal_disetujui',['jadwal'=>$jadwal]);
     }
@@ -147,31 +160,41 @@ class OwnerController extends Controller
 
         $month = $request->input('filter_month');
         
-        $jadwal = DB::table('praktik_dijadwalkan')
+        $query = DB::table('praktik_dijadwalkan')
         ->join('jadwal_praktik', 'praktik_dijadwalkan.jadwal_praktik_idjadwal_praktik', '=', 'jadwal_praktik.idjadwal_praktik')
         ->join('pasien', 'praktik_dijadwalkan.pasien_idpasien', '=', 'pasien.idpasien')
         ->join('dokter', 'dokter.iddokter', '=', 'jadwal_praktik.dokter_iddokter')
         ->join('user as u1' , 'u1.iduser', '=', 'pasien.user_iduser')
         ->join('user as u2', 'u2.iduser', '=', 'dokter.user_iduser')
         ->select('praktik_dijadwalkan.tanggal', 'jadwal_praktik.hari', 'jadwal_praktik.jam', 'praktik_dijadwalkan.keterangan', 'praktik_dijadwalkan.status', 'u1.nama_user as namapasien', 'u2.nama_user as namadokter')
-        ->where('praktik_dijadwalkan.status', '1')
-        ->whereMonth('praktik_dijadwalkan.tanggal','=',$month)
-        ->paginate(15);
+        ->where('praktik_dijadwalkan.status', '1');
+        
+        if($month=='0'){
+            $jadwal = $query->paginate(15);
+        }else{
+            $jadwal = $query->whereMonth('praktik_dijadwalkan.tanggal','=',$month)
+            ->paginate(15);
+        }
 
         return view('owner/jadwal_disetujui',['jadwal'=>$jadwal]);
     }
 
     public function cetakJadwalDisetujuiPDFByMonth($month){
-        $jadwal = DB::table('praktik_dijadwalkan')
+        $query = DB::table('praktik_dijadwalkan')
         ->join('jadwal_praktik', 'praktik_dijadwalkan.jadwal_praktik_idjadwal_praktik', '=', 'jadwal_praktik.idjadwal_praktik')
         ->join('pasien', 'praktik_dijadwalkan.pasien_idpasien', '=', 'pasien.idpasien')
         ->join('dokter', 'dokter.iddokter', '=', 'jadwal_praktik.dokter_iddokter')
         ->join('user as u1' , 'u1.iduser', '=', 'pasien.user_iduser')
         ->join('user as u2', 'u2.iduser', '=', 'dokter.user_iduser')
         ->select('praktik_dijadwalkan.tanggal', 'jadwal_praktik.hari', 'jadwal_praktik.jam', 'praktik_dijadwalkan.keterangan', 'praktik_dijadwalkan.status', 'u1.nama_user as namapasien', 'u2.nama_user as namadokter')
-        ->where('praktik_dijadwalkan.status', '1')
-        ->whereMonth('praktik_dijadwalkan.tanggal','=',$month)
-        ->get();
+        ->where('praktik_dijadwalkan.status', '1');
+
+        if($month == '0'){
+            $jadwal = $query->get();
+        }else{
+            $jadwal = $query->whereMonth('praktik_dijadwalkan.tanggal','=',$month)
+            ->get();
+        }
 
         $pdf = \PDF::loadView('owner/cetakjadwaldisetujuipdf',['jadwal'=>$jadwal,'month'=>$month]);
 
@@ -195,24 +218,6 @@ class OwnerController extends Controller
 
         return $pdf->stream();
     }
-
-    public function searchJadwalDokter(Request $request){
-        
-        $search = $request->input('search_jadwal_dokter');
-
-        $jadwal = DB::table('jadwal_praktik')
-        ->join('dokter', 'jadwal_praktik.dokter_iddokter', '=', 'dokter.iddokter')
-        ->join('user', 'user.iduser', '=', 'dokter.user_iduser')
-        ->select('jadwal_praktik.*', 'user.nama_user')
-        ->where('jadwal_praktik.hari','LIKE','%'.$search.'%')
-        ->orWhere('jadwal_praktik.jam','LIKE','%'.$search.'%')
-        ->orWhere('user.nama_user','LIKE','%'.$search.'%')
-        ->get();
-
-        return view('owner/jadwal',['jadwal'=>$jadwal]);
-    }
-
-
 
     public function showTransaksi()
     {
@@ -248,7 +253,7 @@ class OwnerController extends Controller
         ->orWhere('barang.nama_barang','LIKE','%'.$search.'%')
         ->orWhere('barang.harga_barang','LIKE','%'.$search.'%')
         ->orWhere('transaksi.created_at','LIKE','%'.$search.'%')
-        ->get();
+        ->paginate(15);
 
         return view('owner/transaksi',['transaksi'=>$transaksi]);
     }

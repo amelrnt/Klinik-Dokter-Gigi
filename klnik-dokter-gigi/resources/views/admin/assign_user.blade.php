@@ -63,7 +63,7 @@
                                         </tbody>
                                     </table>
                                     @if($dokter->count() > 0)
-                                        {!!$dokter->links('pagination::bootstrap-4')!!}
+                                        {!!$dokter->appends(['page_pasien' => $pasien->currentPage()])->links('pagination::bootstrap-4')!!}
                                     @endif
                                 </div>
                             </div>
@@ -125,7 +125,7 @@
                                         </tbody>
                                     </table>
                                     @if($pasien->count() > 0)
-                                        {!!$pasien->links('pagination::bootstrap-4')!!}
+                                        {!!$pasien->appends(['page_dokter' => $dokter->currentPage()])->links('pagination::bootstrap-4')!!}
                                     @endif
                                 </div>
                             </div>
